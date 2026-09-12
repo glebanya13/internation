@@ -1,0 +1,35 @@
+{
+  "name": "dorm-duty",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Система учёта студентов и дежурств в общежитии",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "migrate": "tsx src/db/migrate.ts up",
+    "migrate:status": "tsx src/db/migrate.ts status",
+    "db:reset": "tsx src/db/migrate.ts reset",
+    "seed": "tsx src/seed/run.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "api": "tsx src/main/api.ts",
+    "bot": "tsx src/main/bot.ts",
+    "worker": "tsx src/main/worker.ts",
+    "admin:create": "tsx src/main/createAdmin.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,1556 @@
+<title>Дежурства: разбор форм</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --ground:#F4F6F8; --surface:#FFFFFF; --surface-alt:#EAEEF3; --surface-sunk:#E2E8EF;
+  --ink:#171C26; --ink-2:#39424F; --muted:#5C6676; --line:#D2D9E2; --line-2:#BFC8D4;
+  --accent:#23508F; --accent-soft:#E4EBF6;
+  --alert:#9E2740; --alert-soft:#F7E6E9;
+  --warn:#8A5A12; --warn-soft:#F8EEDC;
+  --ok:#2A6A4F; --ok-soft:#E2EFE8;
+  --paper:#FDFDFB; --paper-ink:#1A1A1A; --paper-line:#8C8C8C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1219; --surface:#161A22; --surface-alt:#1D222C; --surface-sunk:#12161D;
+    --ink:#E4E8EF; --ink-2:#C2CAD6; --muted:#96A1B1; --line:#2A313D; --line-2:#3A4351;
+    --accent:#84AAEA; --accent-soft:#1A2434;
+    --alert:#E28C9C; --alert-soft:#2B1B20;
+    --warn:#D6A44F; --warn-soft:#2A2114;
+    --ok:#6FC099; --ok-soft:#152420;
+    --paper:#E9E7E1; --paper-ink:#1A1A1A; --paper-line:#8C8C8C;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1219; --surface:#161A22; --surface-alt:#1D222C; --surface-sunk:#12161D;
+  --ink:#E4E8EF; --ink-2:#C2CAD6; --muted:#96A1B1; --line:#2A313D; --line-2:#3A4351;
+  --accent:#84AAEA; --accent-soft:#1A2434;
+  --alert:#E28C9C; --alert-soft:#2B1B20;
+  --warn:#D6A44F; --warn-soft:#2A2114;
+  --ok:#6FC099; --ok-soft:#152420;
+  --paper:#E9E7E1; --paper-ink:#1A1A1A; --paper-line:#8C8C8C;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent)}
+h1,h2,h3,h4{font-family:"IBM Plex Serif",Georgia,serif; text-wrap:balance; margin:0; line-height:1.22}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1180px; margin:0 auto; padding:0 24px}
+.col{max-width:760px; margin:0 auto}
+.wide{max-width:1080px; margin:0 auto}
+section{padding:0 0 12px}
+.stack{display:flex; flex-direction:column; gap:18px}
+.stack-l{display:flex; flex-direction:column; gap:34px}
+p{margin:0}
+ul,ol{margin:0; padding-left:1.25em; display:flex; flex-direction:column; gap:7px}
+li::marker{color:var(--muted)}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky; top:0; z-index:20; background:var(--ground);
+  border-bottom:1px solid var(--line); backdrop-filter:saturate(1.2) blur(6px);
+}
+nav .wrap{display:flex; gap:2px; overflow-x:auto; padding-top:9px; padding-bottom:9px; scrollbar-width:thin}
+nav a{
+  flex:0 0 auto; font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted); text-decoration:none;
+  padding:5px 9px; border-radius:3px; white-space:nowrap;
+}
+nav a:hover{color:var(--ink); background:var(--surface-alt)}
+nav a:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+
+/* ---------- masthead ---------- */
+header.mast{padding:56px 0 40px; border-bottom:1px solid var(--line)}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted);
+}
+h1{font-size:clamp(34px,5.2vw,50px); font-weight:600; letter-spacing:-.015em; margin:14px 0 0}
+.lede{font-size:18.5px; color:var(--ink-2); margin-top:18px; max-width:62ch}
+.mast-meta{
+  display:flex; flex-wrap:wrap; gap:8px 10px; margin-top:26px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted);
+}
+.mast-meta span{border:1px solid var(--line); border-radius:3px; padding:4px 9px; background:var(--surface)}
+
+/* ---------- section headings ---------- */
+.sec-head{display:flex; gap:16px; align-items:baseline; margin:56px 0 22px}
+.sec-letter{
+  font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:500; color:var(--accent);
+  border:1px solid var(--line-2); border-radius:3px; padding:3px 8px; flex:0 0 auto;
+  background:var(--surface);
+}
+.sec-head h2{font-size:27px; font-weight:600; letter-spacing:-.01em}
+h3{font-size:19px; font-weight:600; margin-top:6px}
+h4{font-size:15.5px; font-weight:600; font-family:"IBM Plex Sans",sans-serif; letter-spacing:.005em}
+.sub{color:var(--muted); font-size:14.5px}
+
+/* ---------- callouts ---------- */
+.note{
+  border-left:3px solid var(--line-2); background:var(--surface); padding:15px 18px;
+  border-radius:0 4px 4px 0; display:flex; flex-direction:column; gap:8px;
+}
+.note .tag{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted);
+}
+.note.alert{border-left-color:var(--alert); background:var(--alert-soft)}
+.note.alert .tag{color:var(--alert)}
+.note.warn{border-left-color:var(--warn); background:var(--warn-soft)}
+.note.warn .tag{color:var(--warn)}
+.note.ok{border-left-color:var(--ok); background:var(--ok-soft)}
+.note.ok .tag{color:var(--ok)}
+.note.acc{border-left-color:var(--accent); background:var(--accent-soft)}
+.note.acc .tag{color:var(--accent)}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:5px; padding:20px 22px}
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px}
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px}
+
+/* ---------- data tables ---------- */
+.scroll{overflow-x:auto; border:1px solid var(--line); border-radius:5px; background:var(--surface)}
+table.data{border-collapse:collapse; width:100%; font-size:14px; min-width:600px}
+table.data th{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:11px;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+  padding:11px 13px; border-bottom:1px solid var(--line-2); background:var(--surface-alt);
+  white-space:nowrap;
+}
+table.data td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top}
+table.data tr:last-child td{border-bottom:none}
+table.data td.f{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink); white-space:nowrap}
+table.data td.t{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); white-space:nowrap}
+table.data tr.hl td{background:var(--warn-soft)}
+.req{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--alert)}
+.opt{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted)}
+
+/* ---------- code ---------- */
+pre{
+  font-family:"IBM Plex Mono",monospace; font-size:12.5px; line-height:1.62; margin:0;
+  background:var(--surface-sunk); border:1px solid var(--line); border-radius:5px;
+  padding:16px 18px; overflow-x:auto; color:var(--ink-2);
+}
+code{font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--surface-alt);
+  padding:1px 5px; border-radius:3px; color:var(--ink)}
+pre code{background:none; padding:0; font-size:inherit}
+.kw{color:var(--accent)}
+.cm{color:var(--muted)}
+
+/* ---------- facsimile ---------- */
+.fax{
+  background:var(--paper); color:var(--paper-ink); border:1px solid var(--line-2);
+  border-radius:4px; padding:18px; font-family:"IBM Plex Serif",Georgia,serif;
+  overflow-x:auto; box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+.fax table{border-collapse:collapse; font-size:10.5px; width:100%; min-width:560px}
+.fax th,.fax td{border:1px solid var(--paper-line); padding:2px 4px; text-align:center; height:17px}
+.fax th{font-weight:600; font-size:9.5px}
+.fax .nm{text-align:left}
+.fax .ttl{text-align:center; font-weight:600; font-size:12px; line-height:1.4; margin-bottom:10px}
+.fax .sig{display:flex; justify-content:space-between; font-size:9px; line-height:1.5; margin-bottom:12px; gap:20px}
+.fax-cap{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); margin-top:8px}
+
+/* ---------- misc ---------- */
+.kv{display:grid; grid-template-columns:auto 1fr; gap:6px 16px; font-size:14.5px}
+.kv dt{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); white-space:nowrap; padding-top:3px}
+.kv dd{margin:0}
+.pill{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:11px;
+  padding:2px 7px; border-radius:3px; border:1px solid var(--line-2); background:var(--surface-alt);
+  color:var(--ink-2); white-space:nowrap;
+}
+.pill.a{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.pill.r{border-color:var(--alert); color:var(--alert); background:var(--alert-soft)}
+.pill.g{border-color:var(--ok); color:var(--ok); background:var(--ok-soft)}
+.pill.w{border-color:var(--warn); color:var(--warn); background:var(--warn-soft)}
+hr{border:none; border-top:1px solid var(--line); margin:0}
+.tree{font-family:"IBM Plex Mono",monospace; font-size:12.5px; line-height:1.75; color:var(--ink-2); white-space:pre; overflow-x:auto}
+footer{border-top:1px solid var(--line); margin-top:64px; padding:28px 0 60px; color:var(--muted); font-size:13.5px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+@media (max-width:640px){
+  header.mast{padding:36px 0 28px}
+  .sec-head{margin:42px 0 18px; gap:12px}
+}
+</style>
+
+<nav><div class="wrap">
+  <a href="#src">Источники</a>
+  <a href="#diff">Расхождения</a>
+  <a href="#hard">Скрытые ограничения</a>
+  <a href="#seed">Наполнение</a>
+  <a href="#a">A · Сущности</a>
+  <a href="#b">B · Поля</a>
+  <a href="#c">C · Правила</a>
+  <a href="#d">D · Список</a>
+  <a href="#e">E · График</a>
+  <a href="#f">F · Экспорт</a>
+  <a href="#g">G · Бот</a>
+  <a href="#h">H · Админка</a>
+  <a href="#i">I · API</a>
+  <a href="#j">J · БД</a>
+  <a href="#k">K · AI</a>
+</div></nav>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="col">
+    <div class="eyebrow">Разбор двух реальных документов · перед реализацией</div>
+    <h1>Дежурства: что на самом деле в ваших формах</h1>
+    <p class="lede">Я распаковал оба <code>.docx</code> и разобрал их на уровне XML — сетку таблиц, объединённые ячейки, ширины колонок, поля страницы. Ниже: что в документах реально есть, чем это отличается от вашего ТЗ, и архитектура, построенная под эти формы, а не под догадки.</p>
+    <div class="mast-meta">
+      <span>списки 4 этажа 2025-2026.docx</span>
+      <span>график дежурств сентябрь 2024.docx</span>
+      <span>A4 portrait · Times New Roman 11pt</span>
+      <span>ред. 2 · учтены уточнения по сменам, факультетам и конфигурации</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== ИСТОЧНИКИ ===================== -->
+<section id="src">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">01</span><h2>Что в документах</h2></div>
+  </div>
+
+  <div class="col stack">
+    <h3>Документ 1 — «списки 4 этажа 2025-2026»</h3>
+    <p>Одна таблица на всю страницу. В сетке <strong>10 колонок</strong>, но это не 10 полей — это <strong>два зеркальных блока по 5 колонок</strong>, чтобы список поместился на одну страницу A4 книжной ориентации.</p>
+  </div>
+
+  <div class="wide" style="margin-top:22px">
+    <div class="fax">
+      <table>
+        <tr><th>Комната</th><th>Фамилия Имя</th><th>Факультет</th><th>Смена</th><th>Курс-группа</th>
+            <th>Комната</th><th>Фамилия Имя</th><th>Факультет</th><th>Смена</th><th>Курс-группа</th></tr>
+        <tr><td rowspan="5">402</td><td class="nm">Кучинский Владислав</td><td rowspan="5">ТОВ</td><td>2</td><td>2-1/2</td>
+            <td rowspan="5">410</td><td class="nm">Стрежнев Артём</td><td rowspan="5">ТОВ</td><td>2</td><td>1-3</td></tr>
+        <tr><td class="nm">Войтко Ярослав</td><td>2</td><td>2-8</td><td class="nm">Репкин Евгений</td><td>2</td><td>1-3</td></tr>
+        <tr><td class="nm">Кудрявцев Кирилл</td><td>2</td><td>2-1</td><td class="nm">Серегов Ярослав</td><td>2</td><td>1-1</td></tr>
+        <tr><td class="nm">Машкетов Антон</td><td>2</td><td>4-10</td><td class="nm">Паршонок Ян</td><td>2</td><td>1-1</td></tr>
+        <tr><td class="nm">Шелкунов Арсений</td><td>2</td><td>4-9</td><td class="nm">Полякович Никита</td><td>2</td><td>1-1</td></tr>
+        <tr><td rowspan="5">405</td><td class="nm"></td><td rowspan="5"></td><td></td><td></td>
+            <td rowspan="5">413</td><td class="nm">Мацехо Мария</td><td rowspan="5">ТОВ</td><td>2</td><td>1-7</td></tr>
+        <tr><td class="nm"></td><td></td><td></td><td class="nm">Рудович Дарья</td><td>2</td><td>1-5</td></tr>
+        <tr><td class="nm"></td><td></td><td></td><td class="nm">Желудкович Есения</td><td>2</td><td>1-8</td></tr>
+        <tr><td class="nm"></td><td></td><td></td><td class="nm">Товстыга Полина</td><td>2</td><td>1-4</td></tr>
+        <tr><td class="nm"></td><td></td><td></td><td class="nm">Чудина Мария</td><td>2</td><td>1-6</td></tr>
+      </table>
+      <div class="fax-cap">Фрагмент. Реально: комнаты 401–416, левый блок 401–408, правый 409–416.</div>
+    </div>
+  </div>
+
+  <div class="col stack" style="margin-top:24px">
+    <dl class="kv">
+      <dt>Колонки</dt><dd>Комната · Фамилия Имя · Факультет · Смена · Курс-группа</dd>
+      <dt>Комнаты</dt><dd>401–416, плоская нумерация. <strong>Никаких блоков</strong> вида 505А/505Б в документе нет.</dd>
+      <dt>Строк на комнату</dt><dd>Ровно 5. Всегда. Даже если комната пустая.</dd>
+      <dt>Объединения</dt><dd><code>Комната</code> и <code>Факультет</code> — vertical merge на все 5 строк комнаты.</dd>
+      <dt>Имя</dt><dd>«Фамилия Имя» — <strong>без отчества</strong>.</dd>
+      <dt>Смена</dt><dd>Учебная смена, у всех <code>2</code>.</dd>
+      <dt>Курс-группа</dt><dd>Строка вида <code>2-5</code>, <code>4-10</code>, <code>2-1/2</code> — курс и номер группы.</dd>
+      <dt>Период</dt><dd>Учебный год <code>2025-2026</code>, не месяц.</dd>
+      <dt>Страница</dt><dd>A4 книжная, поля 0,5&nbsp;см слева/справа, 11pt.</dd>
+    </dl>
+
+    <div class="note acc">
+      <span class="tag">Ключевое наблюдение</span>
+      <p>Пустые комнаты (401, 405, 407, 408, 416) остались в документе с пятью пустыми строками. Это свойство <strong>печатной формы</strong>: бланк рисует все комнаты этажа и добивает их пустыми строками, а не сжимает таблицу под фактическое число студентов.</p>
+      <p><strong>Это не вместимость комнаты.</strong> Пять строк — параметр бланка, а не ограничение на число жильцов и не утверждение, что в комнате должно быть пятеро. Сколько человек живёт, определяет только актуальный состав этажа; комната может быть заселена частично или пустовать. В спецификации это отдельная настройка <code>print_min_rows</code>, к которой не обращается ничего, кроме экспорта.</p>
+    </div>
+
+    <div class="note">
+      <span class="tag">Факультет объединён по комнате</span>
+      <p>Похоже, комнаты формируются по факультету. В данных факультет всё равно должен принадлежать студенту — объединение ячеек это <em>презентация</em>: экспорт схлопывает колонку, если у всех в комнате факультет один, и печатает построчно, если нет.</p>
+    </div>
+  </div>
+
+  <div class="col stack" style="margin-top:44px">
+    <h3>Документ 2 — «график дежурств сентябрь 2024»</h3>
+    <p>Тоже A4 <strong>книжная</strong> (не альбомная), Times New Roman 11pt. Две страницы, на каждой: шапка с тремя блоками подписей, заголовок, основная таблица, таблица изменений.</p>
+  </div>
+
+  <div class="wide" style="margin-top:22px">
+    <div class="fax">
+      <div class="sig">
+        <div>Утверждаю&nbsp;__________<br>председатель студсовета<br>_____________________<br>«__»_________2024 г.</div>
+        <div>Согласовано________<br>заведующий общежитием №4<br>Круклинская Л.В.<br>«__»_________2024 г.</div>
+        <div>Согласовано_________<br>куратор общежития №4<br>_________________<br>«__»_________2024 г.</div>
+      </div>
+      <div class="ttl">График<br>несения дежурства на 5 этаже общежития №4<br>на сентябрь месяц</div>
+      <table>
+        <tr><th>Дата</th><th>№ комнаты</th><th>Время</th><th>Ф.И.О</th><th>Подпись</th>
+            <th>Дата</th><th>№ комнаты</th><th>Время</th><th>Ф.И.О</th><th>Подпись</th></tr>
+        <tr><td rowspan="4">01.09<br>Вс</td><td></td><td>10:00-12:30</td><td></td><td></td>
+            <td rowspan="4">09.09<br>Пн</td><td></td><td>14:00-16:30</td><td></td><td></td></tr>
+        <tr><td></td><td>12:30-15:00</td><td></td><td></td><td></td><td>16:30-19:00</td><td></td><td></td></tr>
+        <tr><td></td><td>19:00-21:00</td><td></td><td></td><td></td><td>19:00-21:00</td><td></td><td></td></tr>
+        <tr><td></td><td>21:00-23:00</td><td></td><td></td><td></td><td>21:00-23:00</td><td></td><td></td></tr>
+        <tr><td rowspan="4">02.09<br>Пн</td><td></td><td>14:00-16:30</td><td></td><td></td>
+            <td rowspan="4">10.09<br>Вт</td><td></td><td>14:00-16:30</td><td></td><td></td></tr>
+        <tr><td></td><td>16:30-19:00</td><td></td><td></td><td></td><td>16:30-19:00</td><td></td><td></td></tr>
+        <tr><td></td><td>19:00-21:00</td><td></td><td></td><td></td><td>19:00-21:00</td><td></td><td></td></tr>
+        <tr><td></td><td>21:00-23:00</td><td></td><td></td><td></td><td>21:00-23:00</td><td></td><td></td></tr>
+      </table>
+      <div style="font-size:10px; margin:12px 0 5px">Изменения в графике дежурств (заполняется старостой)</div>
+      <table>
+        <tr><th>Дата</th><th>№ комн.</th><th>Время</th><th>Ф.И.О.</th><th>Дата</th><th>№ комн.</th><th>Время</th><th>Ф.И.О.</th><th>Подпись старосты</th></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      </table>
+      <div class="fax-cap">Фрагмент стр. 1. Реально: 8 дат в колонке → 16 дат на страницу; таблица изменений — 8 пустых строк.</div>
+    </div>
+  </div>
+
+  <div class="col stack" style="margin-top:24px">
+    <div class="note alert">
+      <span class="tag">Главное, чего нет в ТЗ</span>
+      <p>Единица дежурства — <strong>не «день → студент», а «день → интервал времени → студент»</strong>. В каждом дне <strong>4 смены</strong>, и сетка смен зависит от дня недели. В документе 2024 года она была такой:</p>
+      <ul>
+        <li><strong>Пн–Сб:</strong> 14:00–16:30 · 16:30–19:00 · 19:00–21:00 · 21:00–23:00</li>
+        <li><strong>Вс:</strong> 10:00–12:30 · 12:30–15:00 · 19:00–21:00 · 21:00–23:00</li>
+      </ul>
+      <p>Суббота идёт по будничной сетке — отличается только воскресенье. 30 дней × 4 = <strong>120 дежурств</strong> на этаж за месяц.</p>
+    </div>
+
+    <div class="note ok">
+      <span class="tag">Актуальная сетка · шаблон «Стандарт»</span>
+      <p>По вашему уточнению рабочая сетка Пн–Сб другая. Именно она заводится как <strong>шаблон по умолчанию</strong> — не константой в коде, а строками в <code>duty_slot_rules</code>, которые админ правит в интерфейсе:</p>
+      <div class="scroll" style="margin-top:4px"><table class="data" style="min-width:420px">
+        <tr><th>№ смены</th><th>Пн – Сб</th><th>Вс</th></tr>
+        <tr><td class="f">1</td><td class="f">09:00–11:00</td><td class="f">10:00–12:30</td></tr>
+        <tr><td class="f">2</td><td class="f">11:00–13:00</td><td class="f">12:30–15:00</td></tr>
+        <tr><td class="f">3</td><td class="f">19:00–21:00</td><td class="f">19:00–21:00</td></tr>
+        <tr><td class="f">4</td><td class="f">21:00–23:00</td><td class="f">21:00–23:00</td></tr>
+      </table></div>
+      <p>Количество смен в дне — <strong>тоже данные</strong>: шаблон может задать 3 смены в один день недели и 5 в другой, и график, валидатор и печать подстроятся. Число 4 нигде не зашито.</p>
+    </div>
+
+    <div class="note alert">
+      <span class="tag">Прямое следствие новых смен</span>
+      <p>Будние смены сместились на <strong>утро и день</strong>: 09:00–11:00 и 11:00–13:00. Это время учёбы. Раньше будни начинались в 14:00 и вопрос про <code>study_shift</code> был второстепенным — теперь он <strong>главный вопрос распределения</strong>. Студент 1-й смены физически не может дежурить в 09:00–11:00 в понедельник.</p>
+      <p>Если это так, то каждый будний день фактически делится на два разных пула: утренние смены закрывают студенты 2-й смены, вечерние — 1-й. Это радикально меняет и алгоритм, и то, сколько дежурств реально может взять каждый студент. <strong>Это вопрос №1 из тех, что ниже.</strong></p>
+    </div>
+
+    <dl class="kv">
+      <dt>Колонки</dt><dd>Дата · № комнаты · Время · Ф.И.О · Подпись — снова два зеркальных блока по 5.</dd>
+      <dt>Ячейка даты</dt><dd>Два абзаца: <code>01.09</code> и <code>Вс</code>. Год в дате не печатается.</dd>
+      <dt>Объединение</dt><dd>Дата — vertical merge на 4 строки смен.</dd>
+      <dt>Разбивка</dt><dd>8 дат в колонке → 16 дат на страницу. Сентябрь: стр.1 = 1–16, стр.2 = 17–30.</dd>
+      <dt>Заголовок</dt><dd>«График / несения дежурства на 5 этаже общежития №4 / на сентябрь месяц». <strong>Года в заголовке нет</strong> — он только в строках подписей.</dd>
+      <dt>Шапка подписей</dt><dd>3 блока, повторяются на каждой странице: председатель студсовета (Утверждаю), заведующий общежитием (Согласовано, Круклинская Л.В.), куратор общежития (Согласовано).</dd>
+      <dt>Изменения</dt><dd>Отдельная таблица под каждой страницей, 8 строк, «заполняется старостой», своя колонка «Подпись старосты».</dd>
+    </dl>
+
+    <div class="note warn">
+      <span class="tag">Критично для генерации</span>
+      <p>В приложенном графике <strong>колонки «№ комнаты» и «Ф.И.О» полностью пустые</strong>. Это бланк, а не заполненный месяц. Значит <strong>правила распределения из документа вывести невозможно</strong> — их видно только в структуре, но не в данных. Всё, что ниже в разделе C сверх сетки смен, — это моё предложение, вынесенное в настройки, а не факт из документа. Если у вас есть <em>заполненный</em> график хотя бы за один месяц — он снимет почти все вопросы.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== РАСХОЖДЕНИЯ ===================== -->
+<section id="diff">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">02</span><h2>Расхождения с ТЗ</h2></div>
+    <p class="sub" style="margin-bottom:20px">То, где документы говорят иначе, чем спецификация. Каждое влияет на модель данных.</p>
+  </div>
+  <div class="wide scroll">
+    <table class="data" style="min-width:820px">
+      <tr><th style="width:26%">В ТЗ</th><th style="width:38%">В документах</th><th>Что делаем</th></tr>
+      <tr>
+        <td>Дежурство = день + студент</td>
+        <td>День + <strong>одна из 4 смен</strong> + студент. Сетка смен зависит от дня недели.</td>
+        <td>Сущность <code>Duty</code> ключуется <code>(schedule, date, slot_order)</code>. Сетка смен — настраиваемый шаблон <code>DutySlotTemplate</code>.</td>
+      </tr>
+      <tr>
+        <td>Блок (505 → 505А/505Б)</td>
+        <td>Блоков нет. Плоские комнаты 401–416.</td>
+        <td>Слой <code>Block</code> оставляем, но <strong>nullable</strong>. Этаж без блоков — нормальный случай, а не ошибка. Печать группирует по блоку только если он заполнен.</td>
+      </tr>
+      <tr>
+        <td>ФИО одним полем</td>
+        <td>Список: «Фамилия Имя». График: «Ф.И.О».</td>
+        <td>Три поля <code>last_name / first_name / middle_name</code> (отчество опционально) + два формата вывода: <code>short</code> и <code>initials</code>.</td>
+      </tr>
+      <tr>
+        <td>—</td>
+        <td>Факультет, Смена, Курс-группа.</td>
+        <td>Полноценные поля студента. Факультет — справочник, курс/группа — раздельно, печатаются как <code>курс-группа</code>.</td>
+      </tr>
+      <tr>
+        <td>Широкий график → landscape</td>
+        <td>Обе формы — A4 <strong>книжная</strong>. Узость достигнута зеркальными блоками.</td>
+        <td>Экспорт по умолчанию portrait + two-column mirror. Landscape — опция в настройках шаблона.</td>
+      </tr>
+      <tr>
+        <td>Статус <code>CONFIRMED</code> в боте</td>
+        <td>Колонка «Подпись» — живая подпись на бумаге.</td>
+        <td>Это <strong>разные подтверждения</strong>. В боте — <code>confirmed_at</code>. В печати колонка «Подпись» всегда пустая, под ручку.</td>
+      </tr>
+      <tr>
+        <td>Ручное редактирование графика</td>
+        <td>Таблица «Изменения в графике дежурств (заполняется старостой)».</td>
+        <td>Каждая правка опубликованного графика пишется в <code>DutyChange</code> и печатается в этой таблице — так бумажный документ остаётся сходимым с системой.</td>
+      </tr>
+      <tr>
+        <td>—</td>
+        <td>Роль <strong>староста</strong> (ставит подпись под изменениями). Плюс председатель студсовета, заведующий, куратор.</td>
+        <td>Роль <code>elder</code> у студента + реквизиты подписантов в настройках общежития.</td>
+      </tr>
+      <tr>
+        <td>Комната = свободный список жильцов</td>
+        <td>Ровно 5 строк на комнату, пустые комнаты сохранены.</td>
+        <td>У комнаты — <code>print_capacity</code> (по умолчанию 5). Экспорт добивает пустыми строками.</td>
+      </tr>
+      <tr>
+        <td>Список этажа на месяц</td>
+        <td>Имя файла: <code>2025-2026</code> — учебный год.</td>
+        <td>Список привязан к <strong>учебному году</strong>, график — к месяцу+году. Разные периоды, разные имена файлов.</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== HARDCODE AUDIT ===================== -->
+<section id="hard">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">03</span><h2>Аудит скрытых ограничений</h2></div>
+    <div class="stack">
+      <p>Вы просили проверить, что нигде не осталось зашитых <code>floor = 6/7</code> или <code>faculty = ФИТ/ТОВ</code>. Проверил — и нашёл несколько мест <strong>в моей же первой редакции схемы</strong>, где я сам сузил домен без нужды. Перечисляю честно, вместе с исправлением.</p>
+    </div>
+  </div>
+
+  <div class="wide scroll" style="margin-top:18px">
+    <table class="data" style="min-width:860px">
+      <tr><th style="width:30%">Было (ред. 1)</th><th style="width:34%">Проблема</th><th>Стало</th></tr>
+      <tr>
+        <td class="f">study_shift smallint<br>CHECK (study_shift IN (1,2))</td>
+        <td>Зашивает «смен ровно две». Появится третья или буквенное обозначение — миграция и правка кода.</td>
+        <td class="f">study_shift_id uuid<br>REFERENCES study_shifts(id)</td>
+      </tr>
+      <tr>
+        <td class="f">course smallint<br>CHECK (course BETWEEN 1 AND 6)</td>
+        <td>Магистратура, аспирантура, подготовительное отделение — и 6 мало либо бессмысленно.</td>
+        <td class="f">course smallint CHECK (course &gt; 0)</td>
+      </tr>
+      <tr>
+        <td class="f">slot_order smallint<br>CHECK (slot_order BETWEEN 1 AND 8)</td>
+        <td>Ограничивает число смен в дне. Верхняя граница — произвольная выдумка.</td>
+        <td class="f">slot_order smallint CHECK (slot_order &gt; 0)<br><span class="opt">число смен задаёт шаблон</span></td>
+      </tr>
+      <tr>
+        <td class="f">year smallint<br>CHECK (year BETWEEN 2020 AND 2100)</td>
+        <td>Бессмысленная граница. Ничего не защищает, но однажды сломает архив.</td>
+        <td class="f">year smallint CHECK (year &gt; 1900)</td>
+      </tr>
+      <tr>
+        <td class="f">role varchar(16) DEFAULT 'resident'</td>
+        <td>Строка без справочника — опечатка <code>'eldr'</code> пройдёт молча.</td>
+        <td class="f">role student_role NOT NULL<br><span class="opt">enum — см. ниже, это поведение, не данные</span></td>
+      </tr>
+      <tr>
+        <td class="f">Faculty (id, dormitory_id?, code, name)</td>
+        <td>Справочник был, но без <code>is_active</code> — «деактивировать факультет» из ваших требований невыполнимо, а удалять нельзя из-за истории.</td>
+        <td class="f">+ is_active boolean<br>+ sort_order int</td>
+      </tr>
+      <tr>
+        <td class="f">floors.number smallint</td>
+        <td>Только число. «Цокольный», «мансарда», «7А» не выражаются.</td>
+        <td class="f">number smallint <span class="opt">(сортировка)</span><br>+ code varchar(16) <span class="opt">(отображение)</span></td>
+      </tr>
+      <tr>
+        <td class="f">print_capacity DEFAULT 5</td>
+        <td>Пятёрка взята из формы 4 этажа. Для другого этажа она другая.</td>
+        <td class="f">DEFAULT берётся из<br>floors.default_room_capacity</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="col stack" style="margin-top:26px">
+    <h3>Где enum остаётся — и почему это не то же самое</h3>
+    <p>Есть принципиальная разница между <strong>справочником</strong> и <strong>состоянием конечного автомата</strong>. Их легко перепутать и получить либо жёсткую систему, либо кашу.</p>
+    <div class="grid2">
+      <div class="card stack" style="gap:10px">
+        <h4 style="color:var(--ok)">Справочник — таблица, правит админ</h4>
+        <ul>
+          <li>Факультеты</li>
+          <li>Общежития, этажи, блоки, комнаты</li>
+          <li>Учебные смены</li>
+          <li>Шаблоны смен дежурств и их интервалы</li>
+          <li>Наборы правил распределения</li>
+          <li>Типы уведомлений и их тексты</li>
+        </ul>
+        <p class="sub">Добавление значения <strong>не требует изменения кода</strong>. Ни одно из них не участвует в ветвлениях логики — код только читает и показывает.</p>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <h4 style="color:var(--accent)">Enum — состояние, правит разработчик</h4>
+        <ul>
+          <li><code>student_status</code> — active / suspended / moved_out</li>
+          <li><code>schedule_status</code> — draft / published / archived</li>
+          <li><code>duty_status</code> — scheduled / confirmed / completed / missed / excused / change_required</li>
+          <li><code>violation_state</code> — reported / confirmed / excused / explained</li>
+          <li><code>student_role</code> — resident / elder</li>
+        </ul>
+        <p class="sub">Новое значение здесь <strong>обязано</strong> сопровождаться кодом: новые переходы, новые проверки, новые уведомления. Сделать их таблицей — значит получить статус, который БД принимает, а система не умеет обрабатывать. Это хуже, а не гибче.</p>
+      </div>
+    </div>
+
+    <div class="note acc">
+      <span class="tag">Правило, которое стоит держать в CI</span>
+      <p>Простая проверка на каждом коммите: <code>grep</code> по исходникам на номера этажей, коды факультетов и времена смен вне миграций и тестов. Дешёвая защита от того, что «6 и 7 этаж» через полгода протекут в какой-нибудь хелпер.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SEED ===================== -->
+<section id="seed">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">04</span><h2>Первичное наполнение</h2></div>
+    <div class="stack">
+      <p>«Общежитие → 6 и 7 этаж → преимущественно ФИТ» — это <strong>строка в базе на момент запуска</strong>, ничем не отличающаяся от любой другой. В коде этих значений нет нигде.</p>
+
+      <h3>Три уровня, которые нельзя смешивать</h3>
+      <div class="scroll"><table class="data" style="min-width:700px">
+        <tr><th style="width:22%">Уровень</th><th style="width:30%">Что содержит</th><th>Кто меняет</th></tr>
+        <tr><td class="f">Схема</td><td>Таблицы, enum состояний, ограничения целостности</td><td>Разработчик, миграцией</td></tr>
+        <tr><td class="f">Базовый seed</td><td>Шаблон смен «Стандарт» с сеткой из ваших уточнений, набор правил «По умолчанию», типы уведомлений</td><td>Миграция данных при установке; дальше редактируется в админке</td></tr>
+        <tr><td class="f">Рабочие данные</td><td>Общежитие, этажи 6 и 7, факультет ФИТ, комнаты, студенты</td><td><strong>Только админ через интерфейс</strong></td></tr>
+      </table></div>
+
+      <h3>Мастер первичной настройки</h3>
+      <p>Чтобы завести 6 и 7 этаж не через SQL, в админке нужен пошаговый экран — он же пригодится при подключении второго общежития:</p>
+      <ol>
+        <li>Общежитие: номер, название, ФИО подписантов для печати, часовой пояс.</li>
+        <li>Факультеты: ФИТ, ТОВ, любые другие. Код и полное название.</li>
+        <li>Учебные смены: 1-я, 2-я — с описанием, если у них разное время учёбы.</li>
+        <li>Этажи: номер, отображаемое название, ёмкость комнаты по умолчанию, шаблон смен, набор правил.</li>
+        <li>Комнаты: массовый ввод диапазоном («601–620») либо с блоками («605 → 605А, 605Б»).</li>
+        <li>Студенты: импорт из XLSX/DOCX либо ручной ввод. Факультет выбирается из справочника <em>для каждого студента</em>, не для этажа.</li>
+      </ol>
+
+      <div class="note ok">
+        <span class="tag">Этаж и факультет независимы — на уровне схемы</span>
+        <p>Между <code>floors</code> и <code>faculties</code> <strong>нет ни одного внешнего ключа</strong>. Факультет висит только на студенте. Поэтому «6 этаж: 20 ФИТ + 5 другого факультета» — не особый случай, а обычная выборка; а «7 этаж целиком ФИТ» — просто совпадение в данных, о котором система не знает и не должна знать.</p>
+      </div>
+
+      <div class="note warn">
+        <span class="tag">Что это меняет в печатной форме</span>
+        <p>В вашем документе 4 этажа факультет был у всех один, и колонка схлопывалась вертикальным объединением на всю комнату. На смешанном этаже это станет <strong>обычной ситуацией</strong>: экспорт объединяет ячейку факультета только если у всех жильцов комнаты он совпал, иначе печатает построчно. Логика уже заложена, но теперь это основной путь, а не край.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== A ===================== -->
+<section id="a">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">A</span><h2>Структура данных</h2></div>
+    <div class="stack">
+      <p>Иерархия из документов — с блоком как необязательным уровнем:</p>
+      <div class="card"><div class="tree"><span class="cm">— размещение —</span>
+Dormitory
+└── Floor            (6, 7 — и любые другие, заводятся админом)
+    └── Block?       (необязательный уровень)
+        └── Room     (601…620, либо 605А/605Б)
+            └── Student
+
+<span class="cm">— принадлежность студента, независимая от размещения —</span>
+Faculty      (ФИТ, ТОВ, …)  ──┐
+StudyShift   (1-я, 2-я)     ──┼──→ Student
+course + group_code         ──┘
+
+<span class="cm">— расписание —</span>
+DutySlotTemplate → DutySlotRule  (день недели × № смены × время)
+        │
+DutySchedule     (этаж + год + месяц + статус)
+        └── Duty  (дата + № смены + студент + снимок данных)
+                ├── DutyChange   (замены → «Изменения в графике»)
+                └── Violation    (пропуск / уваж. причина / объяснительная)
+
+<span class="cm">— сервисное —</span>
+DutyRuleSet       (правила распределения, редактируются админом)
+StudentPlacement  (история: этаж/блок/комната + период)
+AiGeneration      (запрос/ответ Claude + результат валидации)
+Notification      (очередь сообщений в Telegram)
+AuditLog</div></div>
+
+      <div class="note acc">
+        <span class="tag">Две независимые оси</span>
+        <p>Размещение (общежитие → этаж → блок → комната) и принадлежность (факультет, смена, курс, группа) пересекаются <strong>только в карточке студента</strong>. Изоляция графиков строится <em>исключительно</em> на оси размещения; факультет на неё не влияет никак — он только атрибут для печати и фильтров.</p>
+      </div>
+
+      <div class="note ok">
+        <span class="tag">Почему так</span>
+        <p><code>StudentPlacement</code> и поля-снимки в <code>Duty</code> — прямой ответ на требование 20. Дежурство хранит не только ссылку на студента, но и <em>текст</em> его ФИО, номера комнаты и этажа на момент дежурства. Студент переехал с 505А на 506Б — старый график печатается ровно так, как был подписан.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== B ===================== -->
+<section id="b">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">B</span><h2>Поля сущностей</h2></div>
+    <p class="sub" style="margin-bottom:6px"><span class="req">●</span> обязательное &nbsp; <span class="opt">○</span> опциональное. Поля, нужные только для печати, помечены <span class="pill">print</span>.</p>
+  </div>
+
+  <div class="wide stack-l" style="margin-top:20px">
+
+    <div>
+      <h3 style="margin-bottom:10px">Dormitory</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">number</td><td class="t">varchar(16)</td><td><span class="req">●</span></td><td>«4» → в заголовке «общежития №4»</td></tr>
+        <tr><td class="f">name</td><td class="t">varchar(255)</td><td><span class="opt">○</span></td><td>Полное наименование учреждения</td></tr>
+        <tr><td class="f">warden_name</td><td class="t">varchar(120)</td><td><span class="opt">○</span></td><td><span class="pill">print</span> заведующий («Круклинская Л.В.»)</td></tr>
+        <tr><td class="f">curator_name</td><td class="t">varchar(120)</td><td><span class="opt">○</span></td><td><span class="pill">print</span> куратор общежития</td></tr>
+        <tr><td class="f">council_head_name</td><td class="t">varchar(120)</td><td><span class="opt">○</span></td><td><span class="pill">print</span> председатель студсовета</td></tr>
+        <tr><td class="f">timezone</td><td class="t">varchar(64)</td><td><span class="req">●</span></td><td>Расчёт времени напоминаний</td></tr>
+      </table></div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">Floor</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">dormitory_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ Dormitory</td></tr>
+        <tr><td class="f">number</td><td class="t">smallint</td><td><span class="req">●</span></td><td>6, 7 — для сортировки и подстановки в «на 6 этаже»</td></tr>
+        <tr><td class="f">code</td><td class="t">varchar(16)</td><td><span class="opt">○</span></td><td>Отображение, если этаж не просто число («цокольный», «7А»)</td></tr>
+        <tr><td class="f">title</td><td class="t">varchar(120)</td><td><span class="opt">○</span></td><td>Произвольное название</td></tr>
+        <tr><td class="f">default_room_capacity</td><td class="t">smallint</td><td><span class="req">●</span></td><td><span class="pill">print</span> ёмкость комнаты по умолчанию для новых комнат</td></tr>
+        <tr><td class="f">elder_student_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>Староста этажа</td></tr>
+        <tr><td class="f">slot_template_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>Сетка смен этажа</td></tr>
+        <tr><td class="f">rule_set_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>Правила распределения</td></tr>
+        <tr><td class="f">is_active</td><td class="t">boolean</td><td><span class="req">●</span></td><td>Этаж выведен из использования — данные и графики остаются</td></tr>
+      </table></div>
+      <p class="sub" style="margin-top:8px">Изоляция этажей держится на этом FK: любой запрос студентов, графиков и уведомлений обязан проходить через <code>floor_id</code>. Обратите внимание: <strong>ссылки на факультет здесь нет и быть не должно</strong>.</p>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">Block <span class="pill">nullable-уровень</span></h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">floor_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ Floor</td></tr>
+        <tr><td class="f">code</td><td class="t">varchar(16)</td><td><span class="req">●</span></td><td>«505»</td></tr>
+        <tr><td class="f">sort_order</td><td class="t">int</td><td><span class="req">●</span></td><td>Порядок в печати</td></tr>
+      </table></div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">Room</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">floor_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ Floor (денормализовано для изоляции)</td></tr>
+        <tr><td class="f">block_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>→ Block, NULL для 4 этажа</td></tr>
+        <tr><td class="f">number</td><td class="t">varchar(16)</td><td><span class="req">●</span></td><td>«401», «505А»</td></tr>
+        <tr><td class="f">print_capacity</td><td class="t">smallint</td><td><span class="req">●</span></td><td><span class="pill">print</span> строк в печатной форме; значение берётся из <code>floor.default_room_capacity</code></td></tr>
+        <tr><td class="f">sort_order</td><td class="t">int</td><td><span class="req">●</span></td><td>Порядок 401→416</td></tr>
+        <tr><td class="f">is_active</td><td class="t">boolean</td><td><span class="req">●</span></td><td>Комната выведена из оборота</td></tr>
+      </table></div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">Student</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">floor_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>Текущий этаж — жёсткая граница видимости</td></tr>
+        <tr><td class="f">room_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>Текущая комната</td></tr>
+        <tr><td class="f">last_name</td><td class="t">varchar(80)</td><td><span class="req">●</span></td><td>«Кучинский»</td></tr>
+        <tr><td class="f">first_name</td><td class="t">varchar(80)</td><td><span class="req">●</span></td><td>«Владислав»</td></tr>
+        <tr><td class="f">middle_name</td><td class="t">varchar(80)</td><td><span class="opt">○</span></td><td>Отчество — в списке не используется, нужно для «Ф.И.О»</td></tr>
+        <tr><td class="f">faculty_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>→ Faculty. <strong>Не связан с этажом</strong> — на одном этаже любые факультеты</td></tr>
+        <tr><td class="f">study_shift_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>→ StudyShift. Справочник, а не 1/2 в коде</td></tr>
+        <tr><td class="f">course</td><td class="t">smallint</td><td><span class="opt">○</span></td><td>Курс, без верхней границы</td></tr>
+        <tr><td class="f">group_code</td><td class="t">varchar(16)</td><td><span class="opt">○</span></td><td>«5», «10», «1/2» → печатается <code>course-group</code></td></tr>
+        <tr><td class="f">telegram_id</td><td class="t">bigint UNIQUE</td><td><span class="opt">○</span></td><td>NULL пока студент не привязан</td></tr>
+        <tr><td class="f">telegram_username</td><td class="t">varchar(64)</td><td><span class="opt">○</span></td><td>Для поиска админом</td></tr>
+        <tr><td class="f">role</td><td class="t">enum</td><td><span class="req">●</span></td><td><code>resident</code> · <code>elder</code></td></tr>
+        <tr><td class="f">status</td><td class="t">enum</td><td><span class="req">●</span></td><td><code>active</code> · <code>suspended</code> (болезнь/академ) · <code>moved_out</code></td></tr>
+        <tr><td class="f">exempt_until</td><td class="t">date</td><td><span class="opt">○</span></td><td>Временное освобождение от дежурств</td></tr>
+        <tr><td class="f">joined_at</td><td class="t">date</td><td><span class="req">●</span></td><td>Дата добавления</td></tr>
+        <tr><td class="f">left_at</td><td class="t">date</td><td><span class="opt">○</span></td><td>Выселение — вместо удаления</td></tr>
+      </table></div>
+      <div class="note" style="margin-top:12px">
+        <span class="tag">Изоляция</span>
+        <p><code>floor_id</code> дублирует <code>room.floor_id</code> намеренно: это позволяет ставить проверку на уровне БД (<code>CHECK</code> через триггер или generated column) и не полагаться на корректность JOIN в каждом запросе. Студент не может редактировать <code>floor_id</code>, <code>room_id</code>, <code>status</code> — эти поля закрыты для бота на уровне сервиса.</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">DutySlotTemplate + DutySlotRule</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">template.id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK, «Стандарт общежития №4»</td></tr>
+        <tr><td class="f">rule.template_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ template</td></tr>
+        <tr><td class="f">rule.weekday</td><td class="t">smallint</td><td><span class="req">●</span></td><td>1=Пн … 7=Вс (ISO)</td></tr>
+        <tr><td class="f">rule.slot_order</td><td class="t">smallint</td><td><span class="req">●</span></td><td>1–4</td></tr>
+        <tr><td class="f">rule.time_from</td><td class="t">time</td><td><span class="req">●</span></td><td>14:00 / 10:00</td></tr>
+        <tr><td class="f">rule.time_to</td><td class="t">time</td><td><span class="req">●</span></td><td>11:00 / 12:30</td></tr>
+        <tr><td class="f">rule.label</td><td class="t">varchar(40)</td><td><span class="opt">○</span></td><td>Название смены, если понадобится («утренняя»)</td></tr>
+      </table></div>
+      <p class="sub" style="margin-top:8px">Шаблон «Стандарт» — 28 строк: Пн–Сб по 4 смены с новой сеткой, Вс со своей. Число строк на день недели произвольное; <code>slot_order</code> нумерует смены внутри дня.</p>
+      <div class="note" style="margin-top:12px">
+        <span class="tag">Смена шаблона не переписывает историю</span>
+        <p><code>Duty</code> хранит собственные <code>time_from</code> / <code>time_to</code>, скопированные при генерации. Админ меняет шаблон в январе — опубликованные графики за декабрь печатаются со старым временем. Иначе подписанный документ перестанет совпадать с системой.</p>
+      </div>
+      <div class="note" style="margin-top:10px">
+        <span class="tag">Шаблон выбирается на трёх уровнях</span>
+        <p>Общежитие задаёт умолчание → этаж может его переопределить → конкретный график хранит снимок. Так «на 7 этаже другое расписание» решается настройкой, а не веткой в коде.</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">Faculty · StudyShift <span class="pill a">справочники</span></h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">faculty.id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">faculty.dormitory_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>NULL = общий для всех общежитий</td></tr>
+        <tr><td class="f">faculty.code</td><td class="t">varchar(32)</td><td><span class="req">●</span></td><td><span class="pill">print</span> «ФИТ», «ТОВ» — то, что печатается в списке</td></tr>
+        <tr><td class="f">faculty.name</td><td class="t">varchar(255)</td><td><span class="opt">○</span></td><td>Полное название для админки</td></tr>
+        <tr><td class="f">faculty.is_active</td><td class="t">boolean</td><td><span class="req">●</span></td><td>Деактивация: скрыт при выборе, но остаётся у существующих студентов</td></tr>
+        <tr><td class="f">faculty.sort_order</td><td class="t">int</td><td><span class="req">●</span></td><td>Порядок в выпадающих списках</td></tr>
+        <tr><td class="f">shift.id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">shift.code</td><td class="t">varchar(16)</td><td><span class="req">●</span></td><td><span class="pill">print</span> «1», «2» — печатается в колонке «Смена»</td></tr>
+        <tr><td class="f">shift.title</td><td class="t">varchar(120)</td><td><span class="opt">○</span></td><td>«Первая смена»</td></tr>
+        <tr><td class="f">shift.busy_from / busy_to</td><td class="t">time</td><td><span class="opt">○</span></td><td>Время учёбы. Заполнено → распределение может избегать пересечений</td></tr>
+        <tr><td class="f">shift.is_active</td><td class="t">boolean</td><td><span class="req">●</span></td><td>—</td></tr>
+      </table></div>
+      <div class="note ok" style="margin-top:12px">
+        <span class="tag">Почему деактивация, а не удаление</span>
+        <p>Факультет расформировали — но студенты, которые в нём числились, остаются в архивных списках и графиках. <code>is_active = false</code> убирает его из форм добавления, не трогая историю. Тот же принцип у этажа, комнаты, смены и студента: <strong>ничего не удаляется физически</strong>.</p>
+      </div>
+      <div class="note" style="margin-top:10px">
+        <span class="tag">busy_from / busy_to — ключ к новой сетке смен</span>
+        <p>Эти два поля превращают «учитывать ли учебную смену» из догадки в данные. Если у 1-й смены указано 08:30–14:00, алгоритм сам поймёт, что дежурство 09:00–11:00 в будни ей недоступно — без единого <code>if (shift == 1)</code> в коде.</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">DutySchedule</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">floor_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ Floor</td></tr>
+        <tr><td class="f">year</td><td class="t">smallint</td><td><span class="req">●</span></td><td>2026</td></tr>
+        <tr><td class="f">month</td><td class="t">smallint</td><td><span class="req">●</span></td><td>1–12</td></tr>
+        <tr><td class="f">status</td><td class="t">enum</td><td><span class="req">●</span></td><td><code>draft</code> · <code>published</code> · <code>archived</code></td></tr>
+        <tr><td class="f">rule_set_snapshot</td><td class="t">jsonb</td><td><span class="req">●</span></td><td>Правила на момент генерации — правила меняются, история нет</td></tr>
+        <tr><td class="f">generated_by</td><td class="t">enum</td><td><span class="req">●</span></td><td><code>ai</code> · <code>algorithm</code> · <code>manual</code></td></tr>
+        <tr><td class="f">published_at / by</td><td class="t">timestamptz / uuid</td><td><span class="opt">○</span></td><td>Момент публикации</td></tr>
+        <tr><td class="f">approval_snapshot</td><td class="t">jsonb</td><td><span class="opt">○</span></td><td><span class="pill">print</span> ФИО подписантов на момент публикации</td></tr>
+      </table></div>
+      <p class="sub" style="margin-top:8px">Уникальность: <code>UNIQUE(floor_id, year, month)</code> — один график на этаж-месяц. Старые не удаляются никогда (требование 19).</p>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">Duty <span class="pill a">центральная сущность</span></h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">schedule_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ DutySchedule</td></tr>
+        <tr><td class="f">duty_date</td><td class="t">date</td><td><span class="req">●</span></td><td>2026-09-01</td></tr>
+        <tr><td class="f">slot_order</td><td class="t">smallint</td><td><span class="req">●</span></td><td>1–4</td></tr>
+        <tr><td class="f">time_from / time_to</td><td class="t">time</td><td><span class="req">●</span></td><td>Копия из шаблона — шаблон может измениться</td></tr>
+        <tr><td class="f">student_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>NULL = слот не закрыт</td></tr>
+        <tr><td class="f">student_name_snapshot</td><td class="t">varchar(200)</td><td><span class="opt">○</span></td><td><span class="pill">print</span> ФИО как было</td></tr>
+        <tr><td class="f">room_number_snapshot</td><td class="t">varchar(16)</td><td><span class="opt">○</span></td><td><span class="pill">print</span> «№ комнаты» как было</td></tr>
+        <tr><td class="f">floor_number_snapshot</td><td class="t">smallint</td><td><span class="opt">○</span></td><td>Этаж на момент дежурства</td></tr>
+        <tr><td class="f">status</td><td class="t">enum</td><td><span class="req">●</span></td><td>см. раздел ниже</td></tr>
+        <tr><td class="f">confirmed_at</td><td class="t">timestamptz</td><td><span class="opt">○</span></td><td>Подтверждение в боте (≠ подпись на бумаге)</td></tr>
+        <tr><td class="f">closed_at / closed_by</td><td class="t">timestamptz / uuid</td><td><span class="opt">○</span></td><td>Кто отметил выполнение/пропуск</td></tr>
+        <tr><td class="f">comment</td><td class="t">text</td><td><span class="opt">○</span></td><td>Заметка админа</td></tr>
+      </table></div>
+      <p class="sub" style="margin-top:8px"><code>UNIQUE(schedule_id, duty_date, slot_order)</code> — ровно один студент на смену. Плюс частичный <code>UNIQUE(schedule_id, duty_date, student_id) WHERE student_id IS NOT NULL</code>, если правило «один раз в день» включено.</p>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">DutyChange — таблица «Изменения в графике»</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">duty_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ Duty</td></tr>
+        <tr><td class="f">from_student_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>Кто был</td></tr>
+        <tr><td class="f">to_student_id</td><td class="t">uuid FK</td><td><span class="opt">○</span></td><td>Кто стал</td></tr>
+        <tr><td class="f">to_room_snapshot</td><td class="t">varchar(16)</td><td><span class="opt">○</span></td><td><span class="pill">print</span> «№ комн.» в строке изменения</td></tr>
+        <tr><td class="f">source</td><td class="t">enum</td><td><span class="req">●</span></td><td><code>admin</code> · <code>elder</code> · <code>swap_request</code></td></tr>
+        <tr><td class="f">reason</td><td class="t">text</td><td><span class="opt">○</span></td><td>Причина</td></tr>
+        <tr><td class="f">changed_at / by</td><td class="t">timestamptz / uuid</td><td><span class="req">●</span></td><td>Аудит</td></tr>
+      </table></div>
+      <p class="sub" style="margin-top:8px">Правки <strong>до</strong> публикации меняют <code>Duty</code> напрямую. Правки <strong>после</strong> публикации пишут <code>DutyChange</code> — и печатаются во второй таблице документа.</p>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">Violation</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Поле</th><th>Тип</th><th></th><th>Назначение</th></tr>
+        <tr><td class="f">id</td><td class="t">uuid</td><td><span class="req">●</span></td><td>PK</td></tr>
+        <tr><td class="f">student_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ Student</td></tr>
+        <tr><td class="f">duty_id</td><td class="t">uuid FK</td><td><span class="req">●</span></td><td>→ Duty</td></tr>
+        <tr><td class="f">state</td><td class="t">enum</td><td><span class="req">●</span></td><td><code>reported</code> · <code>confirmed</code> · <code>excused</code> · <code>explained</code></td></tr>
+        <tr><td class="f">counts_as_violation</td><td class="t">boolean</td><td><span class="req">●</span></td><td>Вычисляемое: <code>state = confirmed</code></td></tr>
+        <tr><td class="f">reason</td><td class="t">text</td><td><span class="opt">○</span></td><td>Причина от студента</td></tr>
+        <tr><td class="f">explanation_text</td><td class="t">text</td><td><span class="opt">○</span></td><td>Объяснительная</td></tr>
+        <tr><td class="f">explanation_file_id</td><td class="t">uuid</td><td><span class="opt">○</span></td><td>Скан/фото из Telegram</td></tr>
+        <tr><td class="f">resolved_by / at</td><td class="t">uuid / timestamptz</td><td><span class="opt">○</span></td><td>Кто из админов закрыл</td></tr>
+      </table></div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:10px">StudentPlacement · Notification · AiGeneration</h3>
+      <div class="scroll"><table class="data">
+        <tr><th>Сущность</th><th>Поля</th><th>Назначение</th></tr>
+        <tr><td class="f">StudentPlacement</td><td class="t">student_id, floor_id, block_id, room_id, valid_from, valid_to</td><td>История проживания. Закрывается при переезде, новая строка открывается. Отвечает за требование 20.</td></tr>
+        <tr><td class="f">Notification</td><td class="t">student_id, duty_id?, type, payload jsonb, scheduled_at, sent_at, state, error</td><td>Очередь. Идемпотентность по <code>UNIQUE(student_id, duty_id, type)</code> — напоминание не уйдёт дважды.</td></tr>
+        <tr><td class="f">AiGeneration</td><td class="t">schedule_id, attempt_no, model, request jsonb, response jsonb, validation_errors jsonb, accepted, created_at</td><td>Полный лог обращений к Claude. Нужен и для отладки, и чтобы показать админу, что именно не прошло валидацию.</td></tr>
+        <tr><td class="f">AdminUser</td><td class="t">id, email, password_hash, role, scope_dormitory_id?, scope_floor_ids[]</td><td>Роли: <code>superadmin</code> · <code>dorm_admin</code> · <code>floor_admin</code>. Область видимости — список этажей, а не «6 и 7» в коде.</td></tr>
+        <tr><td class="f">AuditLog</td><td class="t">actor, action, entity, entity_id, before jsonb, after jsonb, at</td><td>Всё, что меняет графики и студентов.</td></tr>
+      </table></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== C ===================== -->
+<section id="c">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">C</span><h2>Правила формирования графика</h2></div>
+    <div class="stack">
+
+      <h3>Что однозначно следует из документа</h3>
+      <ol>
+        <li>Покрывается <strong>каждый календарный день месяца</strong>, без пропусков и выходных.</li>
+        <li>На день — <strong>ровно 4 смены</strong>.</li>
+        <li>Сетка смен зависит от дня недели: Пн–Сб одна, Вс другая (сдвинута на утро).</li>
+        <li>На смену — <strong>один студент</strong>: одна строка, одно поле Ф.И.О, одна подпись.</li>
+        <li>Рядом с ФИО печатается <strong>его комната</strong> — комната берётся из карточки студента, а не назначается отдельно.</li>
+        <li>Дежурят студенты <strong>только своего этажа</strong> — заголовок фиксирует этаж, список комнат в графике должен принадлежать этому этажу.</li>
+      </ol>
+
+      <div class="note alert">
+        <span class="tag">Что определить нельзя</span>
+        <p>Приложенный график — <strong>пустой бланк</strong>. Ни одного назначенного студента. Поэтому <em>ни одно</em> из правил ниже нельзя вывести из документа, и я их не выдумываю молча — перечисляю как открытые вопросы с предложенным дефолтом.</p>
+      </div>
+
+      <h3>Открытые вопросы и предлагаемые дефолты</h3>
+    </div>
+  </div>
+
+  <div class="wide scroll" style="margin-top:16px">
+    <table class="data" style="min-width:840px">
+      <tr><th style="width:28%">Вопрос</th><th style="width:34%">Предлагаемый дефолт</th><th>Ключ настройки</th></tr>
+      <tr><td>Сколько дежурств на студента в месяц?</td><td>Равномерно: <code>ceil(слотов / активных студентов)</code>, разброс не более ±1. Для 4 этажа: 120 слотов / ~45 студентов ≈ <strong>2–3</strong>.</td><td class="f">duties_per_student = "auto"</td></tr>
+      <tr><td>Можно ли ставить одного человека дважды в один день?</td><td><strong>Нет.</strong></td><td class="f">max_duties_per_day = 1</td></tr>
+      <tr><td>Два дня подряд?</td><td><strong>Нет</strong>, минимум 3 дня между дежурствами.</td><td class="f">min_days_between = 3</td></tr>
+      <tr><td>Учитывать комнату?</td><td>Да: не ставить двух жильцов одной комнаты в один день. Мягкое правило — снимается, если иначе слоты не закрываются.</td><td class="f">room_spacing = "soft"</td></tr>
+      <tr><td>Учитывать блок?</td><td>Включается, если у комнат этажа заданы блоки. Флаг, а не условие в коде.</td><td class="f">block_spacing = "off"</td></tr>
+      <tr><td>Поздние смены (21:00–23:00)?</td><td>Балансировать отдельно, чтобы поздние не доставались одним и тем же.</td><td class="f">balance_by_slot = true</td></tr>
+      <tr><td>Учитывать факультет?</td><td><strong>Нет.</strong> Факультет не влияет на распределение — этаж дежурит целиком, ФИТ и остальные вперемешку. Флаг оставляю на случай, если политика изменится.</td><td class="f">faculty_spacing = "off"</td></tr>
+      <tr class="hl"><td><strong>Учебная смена блокирует время дежурства?</strong></td><td>Со сменами 09:00–11:00 и 11:00–13:00 — почти наверняка <strong>да</strong>. Предлагаю: слот недоступен, если пересекается с <code>busy_from…busy_to</code> учебной смены студента, и только в Пн–Сб.</td><td class="f">study_shift_mode =<br>"block_on_overlap"</td></tr>
+      <tr><td>Исключать даты?</td><td>Ничего не исключается. Админ может пометить праздники/каникулы вручную.</td><td class="f">excluded_dates = []</td></tr>
+      <tr><td>Отсутствующие студенты?</td><td><code>status ≠ active</code> и студенты с активным <code>exempt_until</code> в пул не попадают.</td><td class="f">exclude_non_active = true</td></tr>
+      <tr><td>Учитывать прошлый месяц?</td><td>Да: у кого в прошлом месяце было больше дежурств — в этом ставится меньше; последние дни прошлого месяца учитываются в <code>min_days_between</code>.</td><td class="f">carry_over_balance = true</td></tr>
+      <tr><td>Староста дежурит?</td><td>Да, наравне. <strong>Нужно ваше подтверждение.</strong></td><td class="f">elder_exempt = false</td></tr>
+    </table>
+  </div>
+
+  <div class="col stack" style="margin-top:26px">
+    <div class="note alert">
+      <span class="tag">Проверка выполнимости — обязательный шаг перед генерацией</span>
+      <p>Если учебная смена действительно блокирует утренние слоты, задача может стать <strong>нерешаемой</strong>, и это надо показать админу до генерации, а не после.</p>
+      <p>Считаем на вашей конфигурации. Пусть на 6 этаже 25 студентов и сентябрь 2026 (30 дней, из них 4 воскресенья):</p>
+      <ul>
+        <li>Всего слотов: 30 × 4 = <strong>120</strong></li>
+        <li>Утренних будних слотов (Пн–Сб, смены 1–2): 26 × 2 = <strong>52</strong></li>
+        <li>Если утро доступно только студентам 2-й смены, а их, скажем, 10 — на каждого приходится 5,2 утренних дежурства при общей квоте 120/25 ≈ 4,8. <strong>Не сходится.</strong></li>
+      </ul>
+      <p>Поэтому на экране <code>/schedules/new</code> нужен предварительный расчёт: сколько слотов, сколько кандидатов на каждый, где дефицит. И три способа его разрешить — смягчить правило до «предпочтительно», разрешить превышение квоты, или отметить, что часть студентов свободна утром вне зависимости от смены.</p>
+    </div>
+
+    <h3>Алгоритм генерации</h3>
+    <pre><code><span class="cm">// 1. Календарь — чистая арифметика, без AI</span>
+days      = daysInMonth(year, month)        <span class="cm">// Февраль 2028 → 29</span>
+slots     = []
+for d in 1..days:
+    wd = isoWeekday(year, month, d)          <span class="cm">// 1=Пн … 7=Вс</span>
+    for r in slotTemplate.rulesFor(wd):      <span class="cm">// сколько правил — столько смен</span>
+        slots.push({date: d, order: r.order, from: r.from, to: r.to})
+
+<span class="cm">// 2. Пул — только этот этаж. Факультет НЕ фильтрует.</span>
+pool = students.where(floor_id = F, status = active,
+                      exempt_until IS NULL OR exempt_until &lt; monthStart)
+<span class="kw">assert</span> pool.every(s =&gt; s.floor_id == F)     <span class="cm">// иначе 500, не «почти правильно»</span>
+
+<span class="cm">// 2a. Матрица доступности: кто вообще может встать в этот слот</span>
+<span class="cm">//     единственное место, где учебная смена влияет на распределение</span>
+eligible = {}
+for slot in slots:
+    eligible[slot] = pool.filter(s =&gt; ruleSet.allows(s, slot))
+
+<span class="cm">// 2b. Выполнимость — до генерации, не после</span>
+deficits = slots.filter(s =&gt; eligible[s].length == 0)
+<span class="kw">if</span> deficits.length: вернуть админу отчёт, не запускать распределение
+
+<span class="cm">// 3. Квоты с переносом баланса</span>
+base   = floor(slots.length / pool.length)
+extra  = slots.length % pool.length
+<span class="cm">// extra дополнительных дежурств отдаём тем, у кого прошлый месяц был легче</span>
+quota  = assignQuotas(pool, base, extra, previousMonthLoad)
+
+<span class="cm">// 4. Базовое распределение — детерминированный жадный проход</span>
+<span class="cm">//    слоты в порядке убывания «сложности» (мало кандидатов → раньше)</span>
+draft = greedyAssign(slots, pool, quota, rules)
+
+<span class="cm">// 5. Улучшение (опционально, через Claude) — см. раздел K</span>
+<span class="kw">if</span> ruleSet.use_ai:
+    proposal = claude.rebalance(draft, pool, rules)
+    draft    = validate(proposal) ? proposal : draft   <span class="cm">// fallback молча не падает</span>
+
+<span class="cm">// 6. Валидация — всегда, независимо от источника</span>
+errors = validate(draft)
+<span class="kw">if</span> errors.length: save as draft + показать админу список ошибок
+<span class="kw">else</span>:            save as draft, разрешить «Опубликовать»</code></pre>
+
+    <h3>Валидация (обязательна и для AI, и для ручных правок)</h3>
+    <div class="grid2">
+      <div class="card stack" style="gap:9px">
+        <h4>Жёсткие — блокируют публикацию</h4>
+        <ul>
+          <li>Схема ответа соответствует JSON Schema</li>
+          <li>Все <code>student_id</code> существуют</li>
+          <li>Каждый студент принадлежит выбранному этажу</li>
+          <li>Нет дат вне <code>[1 … daysInMonth]</code></li>
+          <li>Присутствуют <strong>все</strong> даты месяца</li>
+          <li>На каждую дату — ровно столько слотов, сколько задал шаблон для этого дня недели, <code>slot_order</code> без дублей</li>
+          <li>Время слота совпадает с шаблоном для этого дня недели</li>
+          <li>Один студент не назначен дважды на одну дату</li>
+          <li>Нет неизвестных или неактивных студентов</li>
+          <li>Комната каждого студента существует и на этом этаже</li>
+        </ul>
+      </div>
+      <div class="card stack" style="gap:9px">
+        <h4>Мягкие — предупреждение, публиковать можно</h4>
+        <ul>
+          <li>Разброс нагрузки больше ±1</li>
+          <li>Нарушен <code>min_days_between</code></li>
+          <li>Слот пересекается с учебной сменой студента (жёсткое, если <code>study_shift_mode = block_on_overlap</code>)</li>
+          <li>Два жильца одной комнаты в один день</li>
+          <li>Перекос по поздним сменам</li>
+          <li>Незакрытые слоты (<code>student_id = NULL</code>)</li>
+          <li>У студента нет <code>telegram_id</code> — уведомление не дойдёт</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">
+      <span class="tag">Одна точка проверки</span>
+      <p>Валидатор — единственная функция <code>validateSchedule(draft, context)</code>, вызываемая из трёх мест: после AI-генерации, после ручной правки в админке, перед публикацией. Иначе неизбежно расхождение между тем, что проверяет AI-путь, и тем, что проверяет drag&amp;drop.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== D ===================== -->
+<section id="d">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">D</span><h2>Формат списка этажа</h2></div>
+    <div class="stack">
+      <p>Один в один с вашим документом.</p>
+      <dl class="kv">
+        <dt>Колонки</dt><dd><code>Комната</code> · <code>Фамилия Имя</code> · <code>Факультет</code> · <code>Смена</code> · <code>Курс-группа</code></dd>
+        <dt>Раскладка</dt><dd>Два зеркальных блока по 5 колонок на странице A4 portrait.</dd>
+        <dt>Разбивка</dt><dd>Комнаты этажа делятся пополам: первая половина в левый блок, вторая в правый (401–408 / 409–416).</dd>
+        <dt>Строк на комнату</dt><dd><code>max(print_capacity, фактическое число жильцов)</code> — недостающие строки пустые.</dd>
+        <dt>Объединения</dt><dd><code>Комната</code> — merge на все строки комнаты. <code>Факультет</code> — merge, только если у всех жильцов комнаты он совпал; на смешанном этаже печатается построчно.</dd>
+        <dt>Курс-группа</dt><dd>Склейка <code>course</code> + <code>"-"</code> + <code>group_code</code> → <code>2-1/2</code>.</dd>
+        <dt>Факультет</dt><dd>Печатается <code>faculty.code</code> — «ФИТ», «ТОВ» или любой другой из справочника.</dd>
+        <dt>Смена</dt><dd>Печатается <code>study_shift.code</code>.</dd>
+        <dt>Порядок</dt><dd>Комнаты по <code>sort_order</code>; внутри комнаты — по фамилии, если в оригинале не задан свой порядок (в исходнике порядок не алфавитный — добавляем <code>student.sort_order</code> внутри комнаты).</dd>
+        <dt>Шрифт</dt><dd>Times New Roman 11pt, чтобы совпадать с бумажным архивом.</dd>
+        <dt>Пустые комнаты</dt><dd>Печатаются с пустыми строками — сетка мест сохраняется.</dd>
+      </dl>
+      <h3>Фильтры</h3>
+      <p>На экране списка — фильтрация по этажу, факультету, блоку, комнате, курсу, группе и учебной смене, плюс поиск по фамилии. Комбинируются свободно.</p>
+      <div class="note acc">
+        <span class="tag">Фильтр и печатная форма — разные вещи</span>
+        <p>Официальный список этажа печатается <strong>целиком</strong>, со всеми комнатами и пустыми строками — фильтры на него не влияют. Отфильтрованную выборку («все ФИТ 1 курса на 6 этаже») тоже можно выгрузить, но это <em>рабочая справка</em>, а не тот документ, который подписывают: у неё простая плоская таблица без сетки комнат и с указанием применённых фильтров в шапке. Смешивать эти два выхода нельзя — иначе однажды на подпись уйдёт неполный список.</p>
+      </div>
+
+      <div class="note warn">
+        <span class="tag">Нужно решение</span>
+        <p>В исходном файле нет ни заголовка «Список студентов 4 этажа», ни даты формирования, ни номеров страниц — это просто таблица. Вы просите их добавить (п. 6 ТЗ). Предлагаю: заголовок и учебный год в шапке, дата формирования и «стр. N из M» в колонтитуле мелким шрифтом — так документ остаётся узнаваемым, но становится самодостаточным. Скажите, если печатную форму нужно оставить абсолютно идентичной.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== E ===================== -->
+<section id="e">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">E</span><h2>Формат графика</h2></div>
+    <div class="stack">
+      <h3>Структура страницы</h3>
+      <ol>
+        <li><strong>Блок подписей</strong> — три колонки: Утверждаю / председатель студсовета; Согласовано / заведующий общежитием №{N} / {warden_name}; Согласовано / куратор общежития №{N}. У каждой — линия подписи и ««__»_________{год} г.». Повторяется на каждой странице.</li>
+        <li><strong>Заголовок</strong> — «График» / «несения дежурства на {N} этаже общежития №{M}» / «на {месяц в предложном падеже} месяц».</li>
+        <li><strong>Основная таблица</strong> — <code>Дата · № комнаты · Время · Ф.И.О · Подпись</code> ×2 зеркально.</li>
+        <li><strong>Таблица изменений</strong> — «Изменения в графике дежурств (заполняется старостой)», 9 колонок, минимум 8 строк.</li>
+      </ol>
+
+      <h3>Ячейки</h3>
+      <dl class="kv">
+        <dt>Дата</dt><dd>Два абзаца: <code>DD.MM</code> и сокращение дня недели (<code>Пн Вт Ср Чт Пт Сб Вс</code>). Merge на столько строк, сколько смен в этом дне по шаблону.</dd>
+        <dt>№ комнаты</dt><dd><code>room_number_snapshot</code> назначенного студента.</dd>
+        <dt>Время</dt><dd><code>HH:MM-HH:MM</code> из <code>duty.time_from/time_to</code>.</dd>
+        <dt>Ф.И.О</dt><dd><code>student_name_snapshot</code>. Формат <code>Фамилия И.О.</code> при нехватке места, иначе <code>Фамилия Имя</code>.</dd>
+        <dt>Подпись</dt><dd><strong>Всегда пустая.</strong> Это графа под ручку.</dd>
+      </dl>
+
+      <h3>Разбивка на страницы</h3>
+      <p>В оригинале 8 дат в колонке при 4 сменах — то есть 32 строки таблицы на колонку. Правильно считать <strong>в строках, а не в датах</strong>: вёрстка набирает даты в колонку, пока сумма их смен не превысит лимит строк. При 4 сменах это даёт те же 8 дат и 16 на лист, а при другом шаблоне подстроится само:</p>
+      <div class="scroll"><table class="data" style="min-width:520px">
+        <tr><th>Месяц</th><th>Дней</th><th>Стр. 1</th><th>Стр. 2</th><th>Листов</th></tr>
+        <tr><td>Февраль 2027</td><td>28</td><td>1–16</td><td>17–28</td><td>2</td></tr>
+        <tr><td>Февраль 2028 <span class="pill g">високосный</span></td><td>29</td><td>1–16</td><td>17–29</td><td>2</td></tr>
+        <tr><td>Сентябрь 2026</td><td>30</td><td>1–16</td><td>17–30</td><td>2</td></tr>
+        <tr><td>Январь 2027</td><td>31</td><td>1–16</td><td>17–31</td><td>2</td></tr>
+      </table></div>
+      <p class="sub">Правый блок последней страницы может оказаться короче левого — так и в вашем оригинале (24 и 30 сентября). Печатаем без добивки пустыми строками.</p>
+
+      <div class="note acc">
+        <span class="tag">Русская локализация — на бэкенде, не в шаблоне</span>
+        <p>Название месяца нужно в двух падежах: <em>именительный</em> для имени файла («Сентябрь») и <em>предложный</em> для заголовка («на сентябрь месяц» — фактически винительный). Плюс сокращения дней недели. Это словарь из 12 + 7 строк, а не библиотека локализации — задаётся константой, чтобы формулировка совпадала с бумажной.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== F ===================== -->
+<section id="f">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">F</span><h2>Экспорт и печать</h2></div>
+    <div class="stack">
+
+      <h3>Общий принцип</h3>
+      <p>Один источник вёрстки для всех трёх выходов: HTML-шаблон с <code>@page</code> и <code>@media print</code>. Браузерный просмотр, печать по Ctrl+P и PDF — <strong>одна и та же вёрстка</strong>. XLSX генерируется отдельно.</p>
+
+      <div class="grid2">
+        <div class="card stack" style="gap:10px">
+          <h4>PDF</h4>
+          <ul>
+            <li>Рендер headless-браузером (Playwright / Puppeteer) — а не сборкой таблицы вручную в PDF-библиотеке. Только так кириллица, переносы и повтор шапки работают из коробки.</li>
+            <li>Шрифт <strong>встроенный в PDF</strong> (Times New Roman / PT Serif) — иначе кириллица поедет на чужой машине.</li>
+            <li>A4 portrait, поля как в оригинале (0,5–1 см).</li>
+            <li><code>thead { display: table-header-group }</code> — шапка повторяется на каждой странице автоматически.</li>
+            <li><code>tr { break-inside: avoid }</code> — блок из 4 смен одного дня не рвётся между страницами.</li>
+            <li>Ширины колонок фиксированные в процентах, <code>table-layout: fixed</code>, <code>overflow-wrap: anywhere</code> для длинных фамилий — таблица не может уехать за правый край.</li>
+            <li>Колонтитул: «стр. N из M» + «Сформировано DD.MM.YYYY».</li>
+          </ul>
+        </div>
+        <div class="card stack" style="gap:10px">
+          <h4>XLSX</h4>
+          <ul>
+            <li>Реальные merge-ячейки — повторяют vMerge из Word (комната, факультет, дата).</li>
+            <li><code>freeze_panes</code> на строке шапки.</li>
+            <li>Настроенная область печати: <code>fit_to_width = 1</code>, portrait, повтор шапки через <code>print_title_rows</code>.</li>
+            <li>Границы, выравнивание и высоты строк — чтобы распечатанный из Excel лист совпадал с PDF.</li>
+            <li>Даты и время — текстом в формате документа (<code>01.09</code>, <code>14:00-16:30</code>), не как Excel-даты, иначе Excel их переформатирует.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Имена файлов</h3>
+      <pre><code>Список_4_этажа_2025-2026.pdf          <span class="cm">// учебный год — как в вашем файле</span>
+Список_4_этажа_2025-2026.xlsx
+График_дежурств_5_этаж_Сентябрь_2026.pdf
+График_дежурств_5_этаж_Сентябрь_2026.xlsx</code></pre>
+      <p class="sub">Формируются из этажа + периода. Транслитерация не нужна — <code>Content-Disposition</code> с <code>filename*=UTF-8''</code> корректно отдаёт кириллицу во всех современных браузерах.</p>
+
+      <div class="note">
+        <span class="tag">Ещё один выход, который стоит добавить</span>
+        <p>Экспорт в <strong>DOCX</strong>. У вас архив в Word, и заведующая, скорее всего, захочет что-то дописать перед подписанием. Генерация из шаблона (docxtemplater / python-docx) стоит недорого и снимает трение с внедрением.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== G ===================== -->
+<section id="g">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">G</span><h2>Telegram-сценарии</h2></div>
+    <div class="stack">
+
+      <h3>Привязка аккаунта</h3>
+      <p>Админ заводит студента с <code>telegram_id</code> — но <code>telegram_id</code> заранее неизвестен: это число, которое студент нигде не видит. Практичный путь:</p>
+      <ol>
+        <li>Админ создаёт студента без <code>telegram_id</code> и генерирует одноразовый код (или диплинк <code>t.me/bot?start=CODE</code>).</li>
+        <li>Студент запускает бота, <code>telegram_id</code> подхватывается автоматически и записывается в карточку.</li>
+        <li>Незнакомый <code>telegram_id</code> без кода → «Вы не зарегистрированы в системе. Обратитесь к администратору.» и всё.</li>
+      </ol>
+      <div class="note warn">
+        <span class="tag">Уточнение</span>
+        <p>Ввод <code>telegram_id</code> руками в админке тоже оставим — но ошибиться в 10-значном числе легко, и тогда студент получит чужой график. Диплинк надёжнее. Скажите, какой вариант основной.</p>
+      </div>
+
+      <h3>Экраны студента</h3>
+      <div class="grid2">
+        <div class="card stack" style="gap:8px">
+          <h4><code>/start</code> — профиль</h4>
+          <pre style="font-size:12px"><code>ФИО: Иванов Иван
+Этаж: 6
+Блок: 605
+Комната: 605А
+Факультет: ФИТ
+Смена: 2
+Курс-группа: 2-1
+
+📅 Моё ближайшее дежурство
+📋 Мой график на месяц
+ℹ️ Мои данные
+🔔 Уведомления</code></pre>
+          <p class="sub">Блок в профиле показывается только если у комнаты он задан.</p>
+        </div>
+        <div class="card stack" style="gap:8px">
+          <h4>📅 Ближайшее дежурство</h4>
+          <pre style="font-size:12px"><code>Ближайшее дежурство
+
+12 сентября, четверг
+09:00–11:00
+Этаж 6, комната 605А
+
+Статус: назначено
+
+[ ✅ Подтверждаю ]
+[ 🔄 Запросить замену ]</code></pre>
+          <p class="sub">Если дежурств нет — «На этот месяц дежурств не назначено».</p>
+        </div>
+        <div class="card stack" style="gap:8px">
+          <h4>📋 Мой график</h4>
+          <p>Список <strong>своих</strong> дежурств за месяц: дата, день недели, время, статус. Переключение месяцев. Только опубликованные графики — <code>status = published</code> в запросе жёстко, черновик студенту не отдаётся ни при каких условиях.</p>
+        </div>
+        <div class="card stack" style="gap:8px">
+          <h4>ℹ️ Мои данные / 🔔 Уведомления</h4>
+          <p>Данные — read-only: этаж, блок, комната, факультет, смена, курс-группа, число дежурств и подтверждённых пропусков. Кнопка «Сообщить об ошибке» шлёт заявку админу, а не меняет поля.</p>
+          <p>Уведомления — тумблеры «за сутки» / «в день дежурства». Отключить критические (пропуск, объяснительная) нельзя.</p>
+        </div>
+      </div>
+
+      <h3>Объяснительная</h3>
+      <p>После третьего <strong>подтверждённого</strong> пропуска бот пишет студенту и открывает диалог: студент отправляет текст или фото, оно падает в <code>Violation.explanation_*</code>, админ видит в очереди и закрывает.</p>
+
+      <h3>Замена (если включаем)</h3>
+      <p>Студент просит замену → бот предлагает кандидатов <strong>своего этажа</strong>, у которых нет дежурства в этот день → выбранный подтверждает → создаётся <code>DutyChange(source = swap_request)</code> и попадает в таблицу изменений. Требует подтверждения старосты или админа — иначе бумажный документ разойдётся с реальностью.</p>
+
+      <div class="note acc">
+        <span class="tag">Изоляция в боте</span>
+        <p>Каждый хендлер начинается с загрузки студента по <code>telegram_id</code> и берёт <code>floor_id</code> <em>из карточки</em>, никогда из параметров сообщения. Все запросы графиков и списков фильтруются этим <code>floor_id</code> на уровне репозитория. Callback-кнопки содержат <code>duty_id</code> — сервис обязан проверить, что дежурство принадлежит этому студенту, до любого действия.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== H ===================== -->
+<section id="h">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">H</span><h2>Админка</h2></div>
+  </div>
+  <div class="wide scroll" style="margin-top:6px">
+    <table class="data" style="min-width:800px">
+      <tr><th style="width:26%">Страница</th><th>Содержимое и действия</th></tr>
+      <tr><td class="f">/dashboard</td><td>Этажи, статус графиков текущего месяца, непроверенные пропуски, ожидающие объяснительные, студенты без Telegram.</td></tr>
+      <tr><td class="f">/setup</td><td>Мастер первичной настройки: общежитие → факультеты → учебные смены → этажи → комнаты → студенты. Он же используется при подключении нового общежития.</td></tr>
+      <tr><td class="f">/dormitories</td><td>CRUD общежитий. Реквизиты подписантов для печати, часовой пояс, шаблон смен по умолчанию.</td></tr>
+      <tr><td class="f">/floors</td><td>CRUD этажей: номер, код, название, общежитие, староста, шаблон смен, набор правил, ёмкость комнаты. Деактивация без потери данных.</td></tr>
+      <tr><td class="f">/settings/faculties</td><td>Справочник факультетов: создать, переименовать, изменить код, деактивировать, порядок. Показывает, сколько студентов числится за каждым.</td></tr>
+      <tr><td class="f">/settings/study-shifts</td><td>Учебные смены: код, название, время учёбы <code>busy_from…busy_to</code>. Именно отсюда алгоритм узнаёт, что 1-я смена занята утром.</td></tr>
+      <tr><td class="f">/floors/:id/rooms</td><td>Блоки и комнаты, порядок сортировки, <code>print_capacity</code>. Массовый ввод «601–620» одной строкой; создание блока с секциями «605А, 605Б».</td></tr>
+      <tr><td class="f">/floors/:id/students</td><td>Список этажа в печатной раскладке. Фильтры: факультет, блок, комната, курс, группа, смена, поиск по фамилии. Добавить / изменить / переселить / деактивировать. Импорт из XLSX. Экспорт PDF / XLSX / печать.</td></tr>
+      <tr><td class="f">/students/:id</td><td>Карточка: данные, история проживания, история дежурств (все месяцы), пропуски, привязка Telegram.</td></tr>
+      <tr><td class="f">/schedules</td><td>Все графики: этаж × месяц × статус. Ничего не удаляется.</td></tr>
+      <tr><td class="f">/schedules/new</td><td>Общежитие → этаж → год → месяц → правила (с дефолтами этажа) → <strong>отчёт о выполнимости</strong>: сколько слотов, сколько кандидатов на каждый, где дефицит → «Сформировать график».</td></tr>
+      <tr><td class="f">/schedules/:id</td><td>Календарная сетка: день × 4 смены. Drag&amp;drop и выбор «Дата → Смена → Студент». Панель нарушений правил в реальном времени. Счётчик нагрузки по каждому студенту. «Перегенерировать», «Опубликовать».</td></tr>
+      <tr><td class="f">/schedules/:id/changes</td><td>Журнал <code>DutyChange</code> — то, что печатается в таблице изменений.</td></tr>
+      <tr><td class="f">/schedules/:id/journal</td><td>Отметки выполнения: по дню отметить выполнено / пропущено / уважительная.</td></tr>
+      <tr><td class="f">/violations</td><td>Очередь пропусков: подтвердить, признать уважительным, запросить и принять объяснительную.</td></tr>
+      <tr><td class="f">/settings/rules</td><td>Наборы правил распределения (раздел C) — глобальные и по этажу.</td></tr>
+      <tr><td class="f">/settings/slot-templates</td><td>Шаблоны смен: день недели × номер × время. Можно создать несколько («Стандарт», «Сессия», «Каникулы») и назначать этажам. Редактор с предпросмотром недели.</td></tr>
+      <tr><td class="f">/settings/notifications</td><td>Тексты и время отправки напоминаний.</td></tr>
+      <tr><td class="f">/audit</td><td>Кто что менял.</td></tr>
+    </table>
+  </div>
+  <div class="col" style="margin-top:18px">
+    <div class="note">
+      <span class="tag">Экран генерации — самый важный</span>
+      <p><code>/schedules/:id</code> определит, будут ли системой пользоваться. Нужны: цветовая индикация нарушений прямо в ячейке, счётчик «сколько дежурств у студента» в боковой панели, и невозможность нажать «Опубликовать», пока есть жёсткие ошибки.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== I ===================== -->
+<section id="i">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">I</span><h2>API</h2></div>
+    <div class="stack">
+      <pre><code><span class="cm">// Структура</span>
+GET    /api/dormitories
+POST   /api/dormitories
+GET    /api/dormitories/:id/floors
+POST   /api/floors
+PATCH  /api/floors/:id
+GET    /api/floors/:id/blocks
+POST   /api/blocks
+GET    /api/floors/:id/rooms
+POST   /api/rooms                 <span class="cm">// + POST /api/rooms/bulk — «601-620»</span>
+PATCH  /api/rooms/:id
+DELETE /api/floors/:id            <span class="cm">// на деле is_active=false, история цела</span>
+
+<span class="cm">// Справочники</span>
+GET    /api/faculties             <span class="cm">?active=true</span>
+POST   /api/faculties             <span class="cm">{code, name}</span>
+PATCH  /api/faculties/:id         <span class="cm">{code, name, is_active, sort_order}</span>
+GET    /api/study-shifts
+POST   /api/study-shifts          <span class="cm">{code, title, busy_from, busy_to}</span>
+PATCH  /api/study-shifts/:id
+GET    /api/slot-templates
+POST   /api/slot-templates        <span class="cm">{name, rules: [{weekday, slot_order, from, to}]}</span>
+PATCH  /api/slot-templates/:id
+GET    /api/slot-templates/:id/preview  <span class="cm">?year=&month= — сетка до генерации</span>
+
+<span class="cm">// Студенты — всегда в контексте этажа</span>
+GET    /api/floors/:id/students            <span class="cm">?include=empty_rooms — печатная раскладка</span>
+       <span class="cm">// фильтры: &faculty_id=&block_id=&room_id=&course=&group_code=</span>
+       <span class="cm">//          &study_shift_id=&q= — комбинируются свободно</span>
+POST   /api/floors/:id/students
+PATCH  /api/students/:id
+POST   /api/students/:id/relocate          <span class="cm">// закрывает placement, открывает новый</span>
+POST   /api/students/:id/deactivate        <span class="cm">// вместо DELETE — история цела</span>
+POST   /api/students/:id/telegram-link     <span class="cm">// одноразовый код привязки</span>
+GET    /api/students/:id/duties            <span class="cm">?from=&to= — история за всё время</span>
+POST   /api/floors/:id/students/import     <span class="cm">// XLSX</span>
+
+<span class="cm">// Экспорт списка</span>
+GET    /api/floors/:id/roster.pdf          <span class="cm">?academic_year=2025-2026</span>
+GET    /api/floors/:id/roster.xlsx
+GET    /api/floors/:id/roster/print        <span class="cm">// HTML под Ctrl+P</span>
+
+<span class="cm">// Графики</span>
+GET    /api/schedules                      <span class="cm">?floor_id=&year=&status=</span>
+POST   /api/schedules                      <span class="cm">{floor_id, year, month, rule_overrides}</span>
+GET    /api/schedules/feasibility           <span class="cm">?floor_id=&year=&month= — отчёт до генерации</span>
+GET    /api/schedules/:id                  <span class="cm">// полная сетка день × смена</span>
+POST   /api/schedules/:id/generate         <span class="cm">{engine: "ai"|"algorithm"} → 202 + job_id</span>
+GET    /api/schedules/:id/generation/:job  <span class="cm">// прогресс, ошибки валидации</span>
+POST   /api/schedules/:id/validate         <span class="cm">// проверить без сохранения</span>
+PATCH  /api/duties/:id                     <span class="cm">{student_id} — ручная правка, валидация внутри</span>
+POST   /api/duties/:id/swap                <span class="cm">{with_duty_id}</span>
+POST   /api/schedules/:id/publish          <span class="cm">// 409, если есть жёсткие ошибки</span>
+POST   /api/schedules/:id/archive
+GET    /api/schedules/:id/changes
+
+<span class="cm">// Экспорт графика</span>
+GET    /api/schedules/:id/export.pdf
+GET    /api/schedules/:id/export.xlsx
+GET    /api/schedules/:id/export.docx
+GET    /api/schedules/:id/print
+
+<span class="cm">// Исполнение и нарушения</span>
+POST   /api/duties/:id/complete
+POST   /api/duties/:id/miss                <span class="cm">// → Violation(state=reported)</span>
+PATCH  /api/violations/:id                 <span class="cm">{state: confirmed|excused|explained}</span>
+GET    /api/violations                     <span class="cm">?floor_id=&state=</span>
+POST   /api/violations/:id/explanation
+
+<span class="cm">// Настройки</span>
+GET|PUT /api/floors/:id/rule-set
+
+<span class="cm">// Бот (внутренний, авторизация по telegram_id)</span>
+GET    /api/bot/me
+GET    /api/bot/my-duties                  <span class="cm">?year=&month= — только published</span>
+POST   /api/bot/duties/:id/confirm
+POST   /api/bot/duties/:id/swap-request
+POST   /api/bot/violations/:id/explanation
+PATCH  /api/bot/notification-prefs</code></pre>
+
+      <div class="note acc">
+        <span class="tag">Правило для всего API</span>
+        <p>Ни один эндпоинт не принимает <code>floor_id</code> от бота — он всегда выводится из <code>telegram_id</code>. В админке <code>floor_id</code> из запроса сверяется с <code>scope_floor_ids</code> админа. Изоляция этажей должна быть свойством слоя доступа к данным, а не дисциплиной разработчика.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== J ===================== -->
+<section id="j">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">J</span><h2>База данных</h2></div>
+    <p class="sub" style="margin-bottom:16px">PostgreSQL. Ключевые ограничения — те, что делают требования 2, 19 и 20 невозможными к нарушению.</p>
+  </div>
+  <div class="wide">
+    <pre><code><span class="kw">CREATE TYPE</span> student_status  <span class="kw">AS ENUM</span> ('active','suspended','moved_out');
+<span class="kw">CREATE TYPE</span> schedule_status <span class="kw">AS ENUM</span> ('draft','published','archived');
+<span class="kw">CREATE TYPE</span> duty_status     <span class="kw">AS ENUM</span> ('scheduled','confirmed','completed','missed','excused','change_required');
+<span class="kw">CREATE TYPE</span> violation_state <span class="kw">AS ENUM</span> ('reported','confirmed','excused','explained');
+<span class="kw">CREATE TYPE</span> student_role    <span class="kw">AS ENUM</span> ('resident','elder');
+<span class="cm">-- ↑ это состояния конечного автомата: новое значение требует кода.
+-- Всё, что ниже таблицами — данные, которыми управляет администратор.</span>
+
+<span class="kw">CREATE TABLE</span> faculties (
+  id           uuid <span class="kw">PRIMARY KEY</span>,
+  dormitory_id uuid <span class="kw">REFERENCES</span> dormitories(id),   <span class="cm">-- NULL = общий справочник</span>
+  code         varchar(32) <span class="kw">NOT NULL</span>,               <span class="cm">-- 'ФИТ', 'ТОВ', любой другой</span>
+  name         varchar(255),
+  is_active    boolean <span class="kw">NOT NULL DEFAULT</span> true,
+  sort_order   int <span class="kw">NOT NULL DEFAULT</span> 0,
+  <span class="kw">UNIQUE</span> (dormitory_id, code)
+);
+
+<span class="kw">CREATE TABLE</span> study_shifts (
+  id         uuid <span class="kw">PRIMARY KEY</span>,
+  code       varchar(16) <span class="kw">NOT NULL UNIQUE</span>,             <span class="cm">-- '1', '2', и т.д.</span>
+  title      varchar(120),
+  busy_from  time, busy_to time,                        <span class="cm">-- время учёбы, если известно</span>
+  is_active  boolean <span class="kw">NOT NULL DEFAULT</span> true,
+  sort_order int <span class="kw">NOT NULL DEFAULT</span> 0
+);
+
+<span class="kw">CREATE TABLE</span> duty_slot_templates (
+  id           uuid <span class="kw">PRIMARY KEY</span>,
+  dormitory_id uuid <span class="kw">REFERENCES</span> dormitories(id),
+  name         varchar(120) <span class="kw">NOT NULL</span>,                <span class="cm">-- 'Стандарт', 'Сессия'</span>
+  is_active    boolean <span class="kw">NOT NULL DEFAULT</span> true
+);
+
+<span class="kw">CREATE TABLE</span> duty_slot_rules (
+  id          uuid <span class="kw">PRIMARY KEY</span>,
+  template_id uuid <span class="kw">NOT NULL REFERENCES</span> duty_slot_templates(id) <span class="kw">ON DELETE CASCADE</span>,
+  weekday     smallint <span class="kw">NOT NULL CHECK</span> (weekday <span class="kw">BETWEEN</span> 1 <span class="kw">AND</span> 7),  <span class="cm">-- ISO, это календарь</span>
+  slot_order  smallint <span class="kw">NOT NULL CHECK</span> (slot_order &gt; 0),
+  time_from   time <span class="kw">NOT NULL</span>, time_to time <span class="kw">NOT NULL</span>,
+  label       varchar(40),
+  <span class="kw">UNIQUE</span> (template_id, weekday, slot_order)
+  <span class="cm">-- сколько смен в дне — определяется числом строк, а не константой</span>
+);
+
+<span class="kw">CREATE TABLE</span> rooms (
+  id            uuid <span class="kw">PRIMARY KEY</span>,
+  floor_id      uuid <span class="kw">NOT NULL REFERENCES</span> floors(id),
+  block_id      uuid          <span class="kw">REFERENCES</span> blocks(id),
+  number        varchar(16) <span class="kw">NOT NULL</span>,
+  print_capacity smallint <span class="kw">NOT NULL DEFAULT</span> 5,
+  sort_order    int <span class="kw">NOT NULL</span>,
+  is_active     boolean <span class="kw">NOT NULL DEFAULT</span> true,
+  <span class="kw">UNIQUE</span> (floor_id, number),
+  <span class="cm">-- блок, если задан, обязан быть на том же этаже</span>
+  <span class="kw">CONSTRAINT</span> block_same_floor <span class="kw">CHECK</span> (block_id <span class="kw">IS NULL OR</span> block_floor(block_id) = floor_id)
+);
+
+<span class="kw">CREATE TABLE</span> students (
+  id           uuid <span class="kw">PRIMARY KEY</span>,
+  floor_id     uuid <span class="kw">NOT NULL REFERENCES</span> floors(id),
+  room_id      uuid <span class="kw">NOT NULL REFERENCES</span> rooms(id),
+  last_name    varchar(80) <span class="kw">NOT NULL</span>,
+  first_name   varchar(80) <span class="kw">NOT NULL</span>,
+  middle_name  varchar(80),
+  faculty_id   uuid <span class="kw">REFERENCES</span> faculties(id),      <span class="cm">-- независим от floor_id</span>
+  study_shift_id uuid <span class="kw">REFERENCES</span> study_shifts(id),
+  course       smallint <span class="kw">CHECK</span> (course &gt; 0),         <span class="cm">-- без верхней границы</span>
+  group_code   varchar(16),
+  telegram_id  bigint <span class="kw">UNIQUE</span>,
+  role         student_role <span class="kw">NOT NULL DEFAULT</span> 'resident',
+  status       student_status <span class="kw">NOT NULL DEFAULT</span> 'active',
+  exempt_until date,
+  sort_order   int <span class="kw">NOT NULL DEFAULT</span> 0,   <span class="cm">-- порядок внутри комнаты для печати</span>
+  joined_at    date <span class="kw">NOT NULL DEFAULT</span> current_date,
+  left_at      date,
+  <span class="cm">-- этаж студента обязан совпадать с этажом его комнаты</span>
+  <span class="kw">CONSTRAINT</span> student_floor_matches_room <span class="kw">CHECK</span> (room_floor(room_id) = floor_id)
+);
+<span class="kw">CREATE INDEX</span> <span class="kw">ON</span> students (floor_id, status);
+<span class="kw">CREATE INDEX</span> <span class="kw">ON</span> students (faculty_id) <span class="kw">WHERE</span> faculty_id <span class="kw">IS NOT NULL</span>;  <span class="cm">-- фильтрация</span>
+<span class="cm">-- Обратите внимание: между floors и faculties нет ни одного FK.
+-- «6 этаж — это ФИТ» нигде не выражено и не может быть выражено.</span>
+
+<span class="kw">CREATE TABLE</span> duty_schedules (
+  id         uuid <span class="kw">PRIMARY KEY</span>,
+  floor_id   uuid <span class="kw">NOT NULL REFERENCES</span> floors(id),
+  year       smallint <span class="kw">NOT NULL CHECK</span> (year &gt; 1900),
+  month      smallint <span class="kw">NOT NULL CHECK</span> (month <span class="kw">BETWEEN</span> 1 <span class="kw">AND</span> 12),
+  status     schedule_status <span class="kw">NOT NULL DEFAULT</span> 'draft',
+  rule_set_snapshot  jsonb <span class="kw">NOT NULL</span>,
+  approval_snapshot  jsonb,
+  generated_by varchar(16) <span class="kw">NOT NULL</span>,
+  published_at timestamptz, published_by uuid,
+  created_at timestamptz <span class="kw">NOT NULL DEFAULT</span> now(),
+  <span class="kw">UNIQUE</span> (floor_id, year, month)          <span class="cm">-- один график на этаж-месяц</span>
+);
+
+<span class="kw">CREATE TABLE</span> duties (
+  id          uuid <span class="kw">PRIMARY KEY</span>,
+  schedule_id uuid <span class="kw">NOT NULL REFERENCES</span> duty_schedules(id) <span class="kw">ON DELETE RESTRICT</span>,
+  duty_date   date <span class="kw">NOT NULL</span>,
+  slot_order  smallint <span class="kw">NOT NULL CHECK</span> (slot_order &gt; 0),  <span class="cm">-- предел задаёт шаблон</span>
+  time_from   time <span class="kw">NOT NULL</span>,
+  time_to     time <span class="kw">NOT NULL</span>,
+  student_id  uuid <span class="kw">REFERENCES</span> students(id) <span class="kw">ON DELETE RESTRICT</span>,
+  student_name_snapshot varchar(200),
+  room_number_snapshot  varchar(16),
+  floor_number_snapshot smallint,
+  status      duty_status <span class="kw">NOT NULL DEFAULT</span> 'scheduled',
+  confirmed_at timestamptz, closed_at timestamptz, closed_by uuid,
+  comment     text,
+  <span class="kw">UNIQUE</span> (schedule_id, duty_date, slot_order)
+);
+<span class="cm">-- один студент не может дежурить дважды в один день (если правило включено)</span>
+<span class="kw">CREATE UNIQUE INDEX</span> duty_one_per_day
+  <span class="kw">ON</span> duties (schedule_id, duty_date, student_id) <span class="kw">WHERE</span> student_id <span class="kw">IS NOT NULL</span>;
+<span class="kw">CREATE INDEX</span> <span class="kw">ON</span> duties (student_id, duty_date);
+
+<span class="kw">CREATE TABLE</span> student_placements (
+  id         uuid <span class="kw">PRIMARY KEY</span>,
+  student_id uuid <span class="kw">NOT NULL REFERENCES</span> students(id),
+  floor_id   uuid <span class="kw">NOT NULL</span>, block_id uuid, room_id uuid <span class="kw">NOT NULL</span>,
+  valid_from date <span class="kw">NOT NULL</span>, valid_to date,
+  <span class="kw">EXCLUDE USING</span> gist (                     <span class="cm">-- периоды проживания не пересекаются</span>
+    student_id <span class="kw">WITH</span> =,
+    daterange(valid_from, <span class="kw">COALESCE</span>(valid_to,'infinity'::date)) <span class="kw">WITH</span> &amp;&amp;
+  )
+);
+
+<span class="kw">CREATE TABLE</span> notifications (
+  id uuid <span class="kw">PRIMARY KEY</span>,
+  student_id uuid <span class="kw">NOT NULL REFERENCES</span> students(id),
+  duty_id uuid <span class="kw">REFERENCES</span> duties(id),
+  type varchar(40) <span class="kw">NOT NULL</span>,
+  payload jsonb <span class="kw">NOT NULL</span>,
+  scheduled_at timestamptz <span class="kw">NOT NULL</span>, sent_at timestamptz,
+  state varchar(16) <span class="kw">NOT NULL DEFAULT</span> 'pending', error text,
+  <span class="kw">UNIQUE</span> (student_id, duty_id, type)        <span class="cm">-- защита от дублей при рестарте</span>
+);</code></pre>
+  </div>
+  <div class="col" style="margin-top:20px">
+    <div class="note ok">
+      <span class="tag">Три ограничения, которые несут требования</span>
+      <ul>
+        <li><code>student_floor_matches_room</code> — требование 2 нельзя нарушить даже багом в сервисе.</li>
+        <li><code>ON DELETE RESTRICT</code> на <code>duties.student_id</code> — требование 4: удалить студента с историей физически невозможно, только деактивировать.</li>
+        <li><code>*_snapshot</code> + <code>student_placements</code> — требование 20: переезд не переписывает прошлые графики.</li>
+      </ul>
+      <p>И одно ограничение, которого <strong>намеренно нет</strong>: ничто не связывает этаж с факультетом. Смешанный этаж и однородный этаж для схемы неразличимы.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== K ===================== -->
+<section id="k">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">K</span><h2>Где нужен Claude, а где обычный код</h2></div>
+    <div class="stack">
+      <div class="note alert">
+        <span class="tag">Честная оценка</span>
+        <p>Распределение дежурств — это <strong>задача с жёсткими ограничениями, а не творческая</strong>. 120 слотов, 45 студентов, квоты и интервалы. Детерминированный алгоритм решает её за миллисекунды, всегда одинаково, всегда валидно, и его результат можно объяснить. LLM здесь будет медленнее, дороже, недетерминирована и потребует ретраев. Я бы <strong>не делал AI единственным движком генерации.</strong></p>
+        <p>Это не значит, что Claude не нужен — он полезен в других местах, где детерминированный код как раз слаб.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wide grid2" style="margin-top:22px">
+    <div class="card stack" style="gap:12px">
+      <h4 style="color:var(--ok)">Обычный backend — всегда</h4>
+      <ul>
+        <li>Календарь месяца, дни недели, високосные годы</li>
+        <li>Развёртывание сетки смен из шаблона</li>
+        <li>Формирование пула студентов этажа</li>
+        <li>Квоты и базовое распределение (жадный проход + локальный поиск)</li>
+        <li><strong>Вся валидация</strong> — жёсткая и мягкая</li>
+        <li>Публикация, статусы, история</li>
+        <li>Счётчики пропусков и порог в 3</li>
+        <li>Планирование и отправка уведомлений</li>
+        <li>Рендер PDF / XLSX / DOCX</li>
+        <li>Права доступа и изоляция этажей</li>
+      </ul>
+    </div>
+    <div class="card stack" style="gap:12px">
+      <h4 style="color:var(--accent)">Claude — там, где он сильнее кода</h4>
+      <ul>
+        <li><strong>Балансировка мягких предпочтений.</strong> Когда правил становится много и они конфликтуют, Claude хорошо предлагает компромисс. Работает поверх уже валидного черновика, а не с нуля.</li>
+        <li><strong>Объяснение, почему график не сходится.</strong> «Слоты 12–14 сентября закрыть нечем: 6 студентов освобождены, интервал 3 дня не выдерживается» — текстом для человека.</li>
+        <li><strong>Правила естественным языком.</strong> Админ пишет «первокурсников не ставить на 21:00–23:00» → Claude превращает это в структуру <code>rule_set</code>, которую админ подтверждает перед сохранением.</li>
+        <li><strong>Разбор объяснительных.</strong> Суммаризация текста студента, черновик решения для админа. Решение всегда за человеком.</li>
+        <li><strong>Импорт из Word/Excel.</strong> Разбор нестандартных списков в структуру студентов — там, где парсер ломается на человеческом форматировании.</li>
+        <li><strong>Тексты уведомлений</strong> под тон учреждения.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col stack" style="margin-top:24px">
+    <h3>Контракт с AI</h3>
+    <p>Если AI-генерация всё же основной путь — она обязана быть обёрнута так:</p>
+    <ol>
+      <li>Claude получает <strong>только</strong> список студентов выбранного этажа (id, ФИО, комната, текущая нагрузка) и правила. Никаких других этажей, никакого доступа к БД, никаких инструментов записи.</li>
+      <li>Ответ — строго по JSON Schema, через structured output. Свободный текст не парсится.</li>
+      <li>Ответ проходит <code>validateSchedule()</code> — ту же функцию, что и ручные правки.</li>
+      <li>Жёсткие ошибки → до 2 автоматических ретраев с текстом ошибок в промпте. Дальше — фолбэк на детерминированный алгоритм, статус остаётся <code>draft</code>, админ видит, что произошло.</li>
+      <li>Каждая попытка пишется в <code>AiGeneration</code> целиком.</li>
+      <li>Публикацию всегда нажимает человек. AI не публикует.</li>
+    </ol>
+    <pre><code><span class="cm">// Схема ответа</span>
+{
+  "assignments": [
+    { "date": "2026-09-01", "slot_order": 1, "student_id": "uuid" },
+    ...
+  ],
+  "unassigned": [ { "date": "...", "slot_order": 2, "reason": "..." } ],
+  "notes": "строка для администратора"
+}</code></pre>
+    <p class="sub">Поле <code>unassigned</code> важно: лучше честно вернуть незакрытые слоты, чем получить галлюцинированный <code>student_id</code>.</p>
+  </div>
+</section>
+
+<!-- ===================== ВОПРОСЫ ===================== -->
+<section id="q">
+  <div class="col">
+    <div class="sec-head"><span class="sec-letter">?</span><h2>Что нужно от вас до старта</h2></div>
+    <div class="stack">
+      <h4 style="color:var(--alert)">Блокирующие — без ответа алгоритм не спроектировать</h4>
+      <ol>
+        <li><strong>Учебная смена и утренние дежурства.</strong> Смены 09:00–11:00 и 11:00–13:00 в Пн–Сб приходятся на учёбу. Может ли студент 1-й смены дежурить утром в будний день? Если нет — назовите время учёбы каждой смены, я заведу его в <code>busy_from/busy_to</code>, и правило станет данными, а не кодом. Если вопрос вообще не стоит (например, дежурство совместимо с парами) — тоже скажите, это сильно упростит распределение.</li>
+        <li><strong>Заполненный график хотя бы за один месяц.</strong> Ваш образец — пустой бланк. Заполненный снимет большинство вопросов раздела C: сколько дежурств на человека, ставят ли соседей по комнате в один день, кто попадает на поздние смены.</li>
+        <li><strong>Сколько студентов сейчас на 6 и 7 этажах</strong> и сколько комнат. От этого зависит, сходится ли месяц вообще: 120 слотов на 25 человек и на 45 — это разные системы.</li>
+      </ol>
+
+      <h4>Важные, но не блокирующие</h4>
+      <ol start="4">
+        <li><strong>Есть ли на 6 и 7 этажах блоки</strong> (605 → 605А/605Б), как в вашем примере, или плоская нумерация комнат, как на 4 этаже?</li>
+        <li><strong>Дежурит ли староста наравне со всеми?</strong></li>
+        <li><strong>Как привязывать Telegram</strong> — диплинк с кодом или ручной ввод <code>telegram_id</code> админом.</li>
+        <li><strong>Печатная форма списка</strong> — добавлять заголовок, дату и номера страниц, или оставить точную копию оригинала?</li>
+        <li><strong>Нужен ли DOCX-экспорт</strong> в дополнение к PDF и XLSX.</li>
+      </ol>
+
+      <div class="note acc">
+        <span class="tag">Дальше</span>
+        <p>Порядок реализации: миграции и справочники (факультеты, смены, шаблоны смен) → мастер настройки и ввод 6 и 7 этажей → печатный экспорт списка этажа → генерация графика → публикация и экспорт графика → Telegram-бот → уведомления и пропуски.</p>
+        <p>Экспорт списка идёт раньше генерации намеренно: его результат можно положить рядом с вашим бумажным документом и сравнить. Это самая ранняя точка, где видно, верна ли модель данных, — до того, как на неё ляжет вся остальная логика.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="col">Ред. 2 — учтены уточнения по сетке смен, справочнику факультетов, независимости этажа и факультета, конфигурации 6/7 этажей. Разбор основан на XML-структуре файлов «списки 4 этажа 2025-2026.docx» и «график дежурств сентябрь 2024.docx»: сетка таблиц, объединённые ячейки, ширины колонок, поля страницы и кегль.</div>
+</footer>
+
+</div>
